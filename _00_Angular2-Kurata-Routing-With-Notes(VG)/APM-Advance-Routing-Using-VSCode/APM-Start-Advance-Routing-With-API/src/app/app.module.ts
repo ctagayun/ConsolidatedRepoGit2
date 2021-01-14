@@ -1,0 +1,46 @@
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
+import { RouterModule } from '@angular/router';
+
+// Imports for loading & configuring the in-memory web api
+//import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { ProductData } from './products/product-data';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { WelcomeComponent } from './home/welcome.component';
+import { PageNotFoundComponent } from './page-not-found.component';
+
+/* Feature Modules */
+//import { ProductModule } from './products/product.module';  //delete because we will do lazy loading
+import { UserModule } from './user/user.module';
+import { MessageModule } from './messages/message.module';
+import { ConfigService } from './api_settings/api-config.service';
+
+@NgModule({
+  imports: [
+    BrowserModule,   
+    HttpModule,   
+   //InMemoryWebApiModule.forRoot(ProductData, { delay: 1000 }),
+  //  RouterModule.forRoot([  //<--- move the following to AppRoutingModule
+  //    {path: 'welcome', component: WelcomeComponent},
+ //     {path: '', redirectTo: 'welcome', pathMatch: 'full'},
+  //    {path: '**', component: PageNotFoundComponent}
+  //  ], {enableTracing: true}),   
+   // ProductModule,  <---- delete because we will do lazy loading
+    UserModule, 
+    MessageModule,
+    AppRoutingModule  
+  ],
+  declarations: [
+    AppComponent,
+    WelcomeComponent,
+    PageNotFoundComponent
+  ],
+
+  providers: [ConfigService],
+
+  bootstrap: [ AppComponent ]
+})
+export class AppModule { }

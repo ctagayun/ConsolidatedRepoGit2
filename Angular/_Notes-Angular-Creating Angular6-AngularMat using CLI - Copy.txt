@@ -1,0 +1,99 @@
+1.  
+       -  ng new ngMat01 - creates a new angular project
+
+        - npm install @angular/material @angular/cdk - add angular material to the project
+            By executing this command we’re installing Angular Material and the
+            corresponding theming into the project. Furthermore new starter components are
+            registered into ng generate.
+
+        - npm install --save @angular/animations
+     
+
+===================================================
+ TIP: position cursor on the module to be imported
+      and do Ctrl + . to generate import statement for the module
+
+ TIP: To change css to scss open the angular.json and change styles to style.scss
+2. Create and import MaterialModule usin CLI
+       now open app.module.ts and import the following:
+        - import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+        - generate a new module using angular CLI
+           ng g m shared\material --dry-run --flat
+            ng g m shared\material  --flat
+
+        - import the material.module in apps.module
+          import the FormsModule as well
+
+        - open app.component.html and add the following code
+          and run to test:
+           <button mat-button>Click me!</button>
+
+           <mat-checkbox>Check me!</mat-checkbox>
+          but first import the theme in style.css
+          import '@angular/material/prebuilt-themes/indigo-pink.css'
+
+        - npm install --save hammerjs - needed for animation and themes
+          and then open main.ts and import hammerjs
+
+        - the last step is to add material icons
+            1. load the icon font in the index.html with linkref
+
+=======================================================
+DUPLICATING APM APP
+   ng g c home\welcome --dry-run --flat  - create welcome component
+   ng g c home\welcome --flat
+   ng g c home\shell --flat
+   ng g c home\menu --flat
+
+   ng g m app-routing --dry-run --flat  
+    ng g m app-routing --dry-run --flat
+
+   SCAFFOLDING THE APPLICATION:
+      ng g c home\toolbar --flat --no-spec --dry-run
+      ng g c home\main-content --flat --no-spec --dry-run
+       ng g c home\sidenav --flat --no-spec --dry-run
+======================================================
+3. FLEX-LAYOUT
+    - start installing flex-layout
+          npm install --save @angular/flex-layout@latest
+          -upgrade typescript to 2.9.2
+          Note: may need to delete node_modules and run "npm install" again
+        //  npm install @angular/flex-layout rxjs-compat
+
+        Having added new Angular Material starter components to ng generate makes it very easy
+         to get started with Angular Material. The following starter components are available:
+
+        @angular/material:materialDashboard: Create a card-based dashboard component
+        @angular/material:materialTable: Create a component that displays data with a data-table
+        @angular/material:materialNav: Create a component with a responsive sidenav for navigation
+
+2.To make use of those starter components you need to use the ng generate command in the following ways:
+
+     ng generate @angular/material:material-nav --name myNav
+     ng generate @angular/material:nav --name myNav
+
+     ng generate @angular/material:dashboard --name myDashboard
+    ng generate @angular/material:material-dashboard --name myDashboard
+
+   // ng generate @angular/material:material-table -- name myTable
+    ng generate @angular/material:table --name myTable
+
+   Four new files have been added to the project. Those files 
+   contain the implementation of the Angular Material navigation
+    component. MyNavComponent has been added to the declarations
+    array of the @NgModule decorator in AppModule, so that the 
+    component can be used in our Angular application.
+
+3. To make it visible to the user delete the default content 
+ of file app.component.html and just insert the following element:
+<my-nav></my-nav>
+
+4. Adding The Router
+    Now that the navigation layout is available we’re able to 
+    add Angular Router functionality easily. In app.module.ts
+     add the following import statement to import RouterModule 
+     and Routes:
+
+     import { RouterModule, Routes } from '@angular/router';
+
+Next add a router configuration array in the same file:

@@ -1,0 +1,80 @@
+This is an UPDATE to the original "Angular 2: Getting Started" course that was published in April of 2016. The revisions include the changes and new features in Angular 2 for its final release in September of 2016.
+
+You can see the list of changes compared to the original version of the course here: http://blogs.msmvps.com/deborahk/angular-2-getting-started-course-update/
+
+If you have any issues with the sample code for this course, please check here first: http://blogs.msmvps.com/deborahk/angular-2-getting-started-problem-solver/
+
+NPM Website = www.npmjs.com ---> https://nodejs.org/en/download/
+
+Setting up Angular 2 Application --> https://github.com/angular/quickstart https://github.com/angular/angular-cli
+
+Go to the following link to see types of events:
+    https://developer.mozilla.oren-us/docs/web/events
+
+=========================================
+1.  BASICS OF BUILDING A COMPONENT: 
+    - ES2015 lots of new features - let, classes, etc
+
+    - a decorator such as @Component is a function
+        ({
+            selector: 'pm-root' - a directive name to be used in the HTML view
+            template: ... defines the view layout
+        })
+
+    - ANGULAR mODULES: @ANGULAR/CORE @ANGULAR/HTTP, @ANGULAR/ROUTER
+      go to https:///www.npmjs.com/~angular to see complete list of angular mODULES
+
+    - see app.component.ts on how to build a component
+
+            //Step 3: do your imports
+            //importing an angular 2.0 library module
+            //here we are importing a library memeber name  called  Component which is a function
+            import { Component } from '@angular/core'
+
+            //Step 2: Create the metadata
+            //this is the metadata for the c# component class we called AppComponent
+            //the selector is a directive which says that AppComponent class is to be referenced as "pm-app" in the html
+            //it also defines the view that the AppComponent class will populate 
+
+            //a class becomes a component when we give it a @component metadata.
+            //we define the metadata buy using the @Component() function
+            @Component({
+                selector: 'pm-app',
+                template: `
+                <div><h1>{{pageTitle}}</h1>
+                    <div>My First Component</div>
+                </div>
+                `
+            })
+
+            //Step 1.
+            //the component name is AppComponent
+            //our class has an "export" keyword our class is now a module and therefore will be loaded
+            //by our module loader no need to add a script tag for it. 
+
+            //the next step is to define a template associated with this component class. How do we do that?
+            //We do that by metadata (see @component). Angular needs that metadata to instantiate that component
+            //and construct the view
+            export class AppComponent {
+                pageTitle: string = `Product Management System`;
+            }
+
+2. HOSTING A COMPONENT
+    - CREATE INDEX.HTML
+    - and then register the component in an angular module - see AppModule.ts 
+            //this is a decorator that defines the AppModule.ts as an angular module
+            @NgModule({
+            imports: [ BrowserModule ],
+            declarations: [ AppComponent ], //declares AppComponent so that angular can find it's selector
+            bootstrap: [ AppComponent ]   //declares AppComponent as the starting component of our application
+            })
+
+            //this is the class
+            export class AppModule { }
+
+
+3. ANGULAR MODULES
+    - HELP US ORGANIZE THE APPLICATION
+    - HELP US CREATE ORGANIZATION AND BOUNDARIES
+    - PROVIDES TEMPLATE (HTML) RESOLUTION ENVIRONMENT 
+

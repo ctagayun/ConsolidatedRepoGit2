@@ -1,0 +1,52 @@
+<!-- display spinner -->
+<span class="glyphicon glyphicon-refresh glyphicon-spin spinner" *ngIf="loading"></span>
+
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand">{{pageTitle}}</a>
+            <ul class="nav navbar-nav">
+                <li routerLinkActive="active">
+                    <a [routerLink]="['/welcome']"> Home</a>  <!-- the purpose of this is to activate a route -->
+                </li>
+                 <li routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"> <!-- we need this because there 
+                                                                        are 2 routes srating with /products -->
+                    <a [routerLink]="['/products']">Product List</a> <!-- the purpose of this is to activate a route -->
+                </li>
+                <li routerLinkActive="active">
+                    <a [routerLink]="['/products', 0, 'edit']">Add Product</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li *ngIf="authService.isLoggedIn()">
+                    <a>Welcome {{ authService.currentUser.userName }}</a>
+                </li>
+                 <li *ngIf="!messageService.isDisplayed"> <!--display message in the secondary outlet if isDisplayed = false -->
+                    <a (click)="displayMessages()">Show Messages</a>
+                </li>
+                  <li *ngIf="messageService.isDisplayed"> <!--display message in the secondary outlet if isDisplayed = true -->
+                    <a (click)="hideMessages()">Hide Messages</a>
+                </li>
+                <li *ngIf="!authService.isLoggedIn()">     <!-- activate our new login route when the user selects this option -->
+                    <a [routerLink]="['/login']">Log In</a>
+                </li>
+                <li *ngIf="authService.isLoggedIn()">
+                    <a (click)="logOut()">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- divide the container  and create two outlets. oNe for the promary outlet
+         and the other for the secondary outlet for popup message -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <router-outlet></router-outlet>
+            </div>
+            <div class="col-md-2">
+                <router-outlet name="popup"></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

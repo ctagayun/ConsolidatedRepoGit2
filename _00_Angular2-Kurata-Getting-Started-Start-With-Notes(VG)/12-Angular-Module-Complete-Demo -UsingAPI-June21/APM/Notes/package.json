@@ -1,0 +1,47 @@
+//this is the npm Package File. we use npm to install Angular libraries and its dependencies
+//we use npm to run scripts
+{
+    "name": "product-management",
+    "version": "1.0.0",
+    "author": "Deborah Kurata",
+    "description": "Package for the Acme Product Management sample application",
+    "scripts": {  //here are the list of scripts that we can run with npm
+        "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ", //npm start to run our application
+        "tsc": "tsc", //npm run tsc -  runs the TypeScripts compiler
+        "tsc:w": "tsc -w", //npm run rsc:w - runs the TypeScripts compiler in watch mode
+        "lint": "tslint ./app/**/*.ts -t verbose",
+        "lite": "lite-server", //run npm lite-server - runs the lite server that we use to run our application
+        "typings": "typings", //npm run typings - runs the typing tool. For TypeScript to be strongly typed it needs
+                              //to know about each library's type. these are installed type definition File
+                              //with d.ts extension
+        "postinstall": "typings install"
+    },
+    "license": "ISC",   //when we type npm install, npm locates each of these libraries in its repository by name
+                        //and install the specified version
+        "dependencies": {  //defines the libraries that the application needs to run
+        "@angular/common": "2.0.0",
+        "@angular/compiler": "2.0.0",
+        "@angular/core": "2.0.0",
+        "@angular/forms": "2.0.0",
+        "@angular/http": "2.0.0",
+        "@angular/platform-browser": "2.0.0",
+        "@angular/platform-browser-dynamic": "2.0.0",
+        "@angular/router": "3.0.0",
+        
+        "core-js": "^2.4.1",
+        "reflect-metadata": "^0.1.3",
+        "rxjs": "5.0.0-beta.12", //reactive extensions
+        "systemjs": "0.19.27",  //this is or module loader
+        "zone.js": "^0.6.23",
+        
+        "bootstrap": "^3.3.6"  //bootstrap 3.3.6 for styling
+    },
+    "devDependencies": {  //defines the additional libraries we need for development
+        "concurrently": "^2.2.0",
+        "lite-server": "^2.2.0",
+        "tslint": "^3.7.4",
+        "typescript": "^2.0.2", //here is where we define TypeScripts
+        "typings": "^1.0.4"
+    },
+    "repository": {}
+}

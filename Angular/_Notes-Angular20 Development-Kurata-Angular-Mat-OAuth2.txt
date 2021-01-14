@@ -1,0 +1,813 @@
+- npm install -g @angular/cli
+  npm install @angular/cli
+  ng update @angular/cli 
+  npm install
+  ng s -o 
+  
+ TO CHECK Version of NETCORE:
+    c:\program files\dotnet\shared\microsoft.netcoreapp
+
+- some useful extensions
+    HTML CSS SUpport - useful especially if you are using bootstrap
+
+ - download NPM from this lik www.npmjs.com 
+   
+ - got to https://nodejs.org/en/download/current/ and download node.js msi
+ - run the npm install
+
+ - How to setup an Angular2 Project
+   - to manually setup Angular 2 Application - go t0 www.angular.io
+   - github.com/angular/quickstart or
+   - go to github.com/angular/angular-cli to use AngularCLI
+   - use Starter Files --> go to github.com/deborahK/Angular2-GettingStarted
+
+To hide typescript generated files in VS Code;
+-go to preferences-->settings-->workspace
+/ Place your settings in this file to overwrite default and user settings.
+{
+   "files.exclude":{
+      "app/**/*.js":true,
+      "app/**/*.js.map":true
+   } 
+}
+
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/*.js.map": true,
+        "**/*.js": {"when": "$(basename).ts"}
+    }
+}
+
+- ctrl + e shortcut to search for files 
+
+- go to www.angular.io ---> tools and libraries -- UI Components --> ng2-bootstrap
+
+==============================================================================
+   NOTES ON BOOTSTRAP 4 AND NG-BOOTSTRAP
+
+   ng-bootstrap and ngx-bootstrap are two different projects created by two different teams. 
+   They are different but used for the same purpose. One of the main difference is that
+   you can use ngx-bootstrap for both Bootstrap 3 and Bootstrap 4.
+   ng-bootstrap is only for Bootstrap 4.
+
+==============================================================================
+
+
+Kurata - Angular 2.0 Getting started
+
+What is Angular Directives:
+
+    Components—directives with an HTML template.
+       Ex. ProductComponent.cs
+
+    Structural directives—change the DOM layout by adding and removing DOM elements.
+       Ex. NGIf, NgRepeat
+
+    Attribute directives—change the appearance or behavior of an element, component, or another directive.
+        Ex highlightDirective.cs
+            @Directive({
+              selector: '[appHighlight]'
+            })
+            export class HighlightDirective {
+              ....
+            }
+
+
+1. What is a Component 
+    - Angular CLI creates the initial component .. the App component
+      (we need to modify this component based on our application REQUIREMENTS)
+    - a component includes interface fragments defining a view for the application
+
+    - we use angular binding and directives (in the html) to power up the view.
+      a class that contains code and properties associated with the view. the class is created 
+      with typescript.
+
+    - in addition to the class, a component contains import statements of directives it needs.
+
+    - a class becomes a component when we it a component meta data:
+        @Component(
+          {
+            selector: pm-app,
+            template: index.html...
+          }
+        )
+
+    - an angular app is a collection of components
+
+    - a component has a life cycle hooks: OnInit, OnChanges, OnDestroy these hooks are interfaces
+      that we need to implement in our components.
+
+    - Pipes are used to transform bound properties.. such as currency properties that needs formatting
+      Pipes are also used for filtering and sorting
+    
+    - Nested Components 
+       - an inner component is embedded in the outer component by sppecifying the directive name 
+         of the component (ex. pm-star) in the outer compoent
+       - outer component (parent) communicates to the inner component using input properties
+       - inner component communicates with outer using @input properties and communicates to 
+         the outer component by raising events
+
+       - passing data to the inner component using @input decorator in the properties of the 
+         of the component. @input () rating: number; - this exposes rating to the container
+         to access and populate by binding.
+
+      - passing data to the container:
+          - the inner component exposes an event using @Output
+              @Output() notify: eventEmitter<string> = new eventEmitter<string>();
+
+2. SERVICES AND DEPENDNECY INJECTION:
+    - building a service: create a class; import what we need for the srvice and define
+      the the metadata as a service by using the @injectable decorator
+
+    - register the service with angular in the component tha twill use it
+    - use constructor dependency injection to inject a service in a component
+
+3. RETRIEVING DATA USING HTTP:
+    - OBSERVABLES (proposed es2016) - manages async data. we can think of it as an ARRAY whose
+      items arrives async over time. To use observable now (pending es2016) we need to 
+      RxJS - Reactive extensions 3rd party lib
+
+    - method in our code can subscribe to an observable(using SUBSCRIBE FUNCTION) to receive
+      async notifications as new data arrives. Map operator transform the incoming data.
+
+    - SENDING HTTP REQUEST 
+        - inject angular http service (import httpclient) in our component, but first 
+          import HttpClientModule in app.module.ts @NgModule section.
+
+4. WHAT IS A MODULE
+
+    - it is use to organize the pieces of our application. 
+    - A CLASS WITH AN NgModule decorator
+    - and angular module imports other module (route module, @angular module, 3rd party, etc.)
+      and can export or re-export modules it imports.
+    - it can register service providers with Angular injector making the service availalable to any
+      class in the application
+
+    - it declares the components, directives and pipes it manages under the
+      declarations section //very important
+        Ex. 
+          declarations: [
+                    ProductListComponent,
+                    ProductDetailComponent,
+                    ProductFilterPipe
+     - modules  extends our application using external libraries
+
+    - module is great way to selectively aggregate classes from other modules and re-export them
+      in a consolidated convenience module. browser module, http module and router modules
+      are examples of this. see appmodule.ts
+      
+   ============================= 
+   ROOT MDULE - APPMODULE.TS
+           Note: you have to inport any FEATURE module in app.module.ts. Ex. the productmodule.ts
+            that we created.
+
+            import { NgModule } from '@angular/core';
+            import { BrowserModule } from '@angular/platform-browser';
+            import { HttpModule } from '@angular/http';
+            import { RouterModule } from '@angular/router';
+            import { AppComponent }  from './app.component';
+            import { WelcomeComponent } from './home/welcome.component';
+
+            /* Feature Modules */
+            import { ProductModule } from './products/product.module';
+            @NgModule({
+              imports: [
+                BrowserModule,
+                HttpModule,
+                RouterModule.forRoot([
+                  { path: 'welcome', component: WelcomeComponent },
+                  { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+                  { path: '**', redirectTo: 'welcome', pathMatch: 'full' }
+                ]),
+                ProductModule
+              ],
+              declarations: [ //app.module manages the following components
+                AppComponent,
+                WelcomeComponent
+              ],
+              bootstrap: [ AppComponent ]
+            })
+            export class AppModule { }    
+     
+     ==================================
+     FEATURE MODULE - PRODUCTMODULE.TS
+
+    - it is use to organize the pieces of our application. Example: product.module.ts
+      This module is called FEATURE MODULE. It is meant to encapsulate unique business
+      work flow such as Product management
+                 import { NgModule } from '@angular/core';
+                import { RouterModule} from '@angular/router';
+                import { ProductListComponent } from './product-list.component'
+                import { ProductDetailComponent } from './product-detail.component';
+                import { ProductDetailGuard } from './product-guard.service';
+                import { ProductFilterPipe } from './product-filter.pipe';
+                import { ProductService } from './product.service';
+                import { SharedModule } from '../shared/shared.module';
+
+                @NgModule({
+                  imports: [
+                    SharedModule,
+                    RouterModule.forChild([
+                      { path: 'products', component: ProductListComponent },
+                      { path: 'product/:id',
+                        canActivate: [ ProductDetailGuard],
+                        component: ProductDetailComponent
+                      }
+                    ])
+                  ],
+                  declarations: [ //product module manages the folowing components and pipes
+                    ProductListComponent,
+                    ProductDetailComponent,
+                    ProductFilterPipe
+                  ],
+                  providers: [
+                    ProductService,
+                    ProductDetailGuard
+                  ]
+                })
+                export class ProductModule {}
+    ==================================
+     SHARED MODULE  - IS A MODULE THST IS COMMONLY USED IN OTHER MODULES
+
+    
+5. ROUTING BASICS
+    - we need to import RouterModule in appmodule.ts
+    - routing provides a way to navigate the application
+    - an angular application is a SPA. All views are displayed one by one in
+      index.html defined in the <body> in this case in <pm-app> </pm-app> tag:
+           html>
+
+        <head lang="en">
+            <base href="/">
+            <title>Acme Product Management</title>
+             ....
+        </head>
+        <body>
+            <pm-app>Loading App...</pm-app>
+        </body>
+
+</html>
+==============================================================================
+
+Mark Zamoyta's Building Angular 2.0 Framework
+==============================================================================
+https://github.com/angular/angular-cli
+https://github.com/angular/angular-cli#updating-angular-cli
+
+1. Download node.js.
+   - go  to https://nodejs.org/en/download/current/ and download node.js msi
+   - run the npm install
+2. To Instal CLI: nmp install -g @angular/cli
+
+   -g means global so that you will be able to access CLI from any folder
+
+  - To display version of CLI = ng --version
+
+3. To Create and setup a Project using CLI
+   - ng new green-nations
+   - type cd green-nations
+   - type "ng-serve" to start development web server
+   - go to a browser and type "loclahost:4200" to run the application you should see "app works!"
+
+   - next install bootstrap: type 
+
+       - next run npm install --save bootstrap
+       - go to https://github.com/angular/angular.cli  and copy ../node_modules/bootstrap/dist/css/bootstrap.css
+       - open angular-cli.json and navigate to line 20 thru 22
+         and paste  "../node_modules/bootstrap/dist/css/bootstrap.css" to the apps[0].styles array
+        
+          Note: "styles.css" inside line 20 thru 22 is our global css located in "src" folder
+      
+   - now install the font
+       - go to https://fonts.google.com
+       - click the the + positive sign of Open Sans font 
+         and then click to open dialog
+         and then copy the CDN link appearing below STANDARD
+         and then go to "src" folder and open index.html and paste the CDN link after
+         href="favicon.ico"
+
+       - then go back to the selected google font dialog and copy this font-family: 'Open Sans', sans-serif;
+         appearing below Specify in CSS.
+         And then open style.css located inside src folder and create the body of style.css which is our global css
+         like this and paste inside it font-family: 'Open Sans', sans-serif;: 
+            body{
+               font-family: 'Open Sans', sans-serif;
+            }
+
+   - now look at the "App" folder
+
+   ==========================================================================
+   Angular 2 Reactive Forms - Kurata
+
+   -  blogs.msmvps.com/deborahk/angular-2-reactive-forms
+   -  github.com/deborahK/angular2-ReactiveForms
+            
+
+    ======================================================================
+   Developing Angular2 MVC Core in VS2017
+
+    REQUIREMENTS
+      - VS 2017
+      - node.js v6 or later
+      - web payload for for asp.net web development
+      - note angular develeopnt using asp.net core SPA TEMPLATE are commnad line driven as of todate
+
+
+    SPA TEMPLATE BENEFITS
+       - Angular and ASP.NET Core is a single solution - THIS MEANS THAT IT SOLVES THE CHALLENGES OF 
+         BRINGING ANGULAR CLIENT-SIDE SYSTEM WITH THE ASP.NET CORE SERVER-SIDE SYSTEM. So we can host it in a 
+         single solution. It resolve some of the routing issues. 
+
+       - Server side pre-rendering - the advantage of this is that it leverages node on the server to create a 
+         a version of your page that can be downloaded very quickly when you start the application before
+         the Javascript client is up and so it gives you much faster applcation launch capability.
+
+       - Webpack dev middleware - we are leveraging this middleware. The gret thing about this webpack tool is
+         it runs in the background and is constantly monitoring your source fies and will transpile your typescripts
+         as created and saved. That mmeans it is always ready to go. Tht ties nicely with HOT MODULE REPLACING
+
+
+       - Hote Module Replacing - this llows us to automaticall refresh our browser to display updated content as you
+         modify the angular application. So this means we dont have to constanly compile our applcations. This is 
+         create for rapid client-side development of our application.
+
+      - The template supports 2 build modules:
+          - DEV - source maps for debugging
+          - PROD - minifies and does not produce source maps
+
+      - See Steve Sanderson blog post: http://bit.ly/spatemplate to learn more
+
+    
+      - https://channel9.msdn.com/Events/Visual-Studio/Visual-Studio-2017-Launch/WEB-103
+
+  ================================================   
+   How to install SPA Templates
+       - verify version of node by doing "node --version" make sure it is greater than Version 6
+       - dotnet new --install Microsoft.AspNetCore.SpaTemplates::*  to install spa templates
+         dotnet new --install Microsoft.AspNetCore.SpaTemplates Version --0.8.5
+
+  =================================================
+   HOW TO CREATE ANGULAR SPA APPLICATIONS   
+   - open a commnad prompt  
+   - md CrankBank - create a directory
+   - cd CrankBank - change directory
+
+   - donet new -l  - run this comand to display list of available templates
+
+   - create my new angular application: (this will create the project)
+        dotnet new angular (do a dir to see projet)
+
+
+  - run  dotnet restore - this will restore all packges needed. I could have done this in VS 2017 
+    using Nuget but  want to see progress of NPM instgall
+
+  - type npm install - to install NPM
+
+  - run this command bring up the project Visual Studio ---> start crankbank.csproj 
+
+ ===================================================
+  PREPARING FOR OUR APP
+
+  - delete the components we dont need.
+       - CounterComponent
+       - FetchDataAcomponent
+       - NavMenu
+
+      - update app.module.ts - remove imports declaration and adjust routes
+
+      - Update AppComponent
+      - update HomeComponent
+
+  - see notes on startup.cs which contains the routing magic on the MVC side of the house
+    that maps to our home controller so that we can deliever our first view via MVC
+
+  - open Index.html this is the single page that will be served by our MVC application.
+
+        <!--noticed we a have an app tag here which points to our app component
+            in Angular
+            prerender-module="ClientApp/dist/main-server - this fires the pre-rendering 
+            of our application to speed application launch
+            -->
+        <app asp-prerender-module="ClientApp/dist/main-server">Loading...</app>
+
+        <script src="~/dist/vendor.js" asp-append-version="true"></script>
+
+        <!--we are also launching our compiled, transpiled, minified client.js
+            to launch our application located in the dist folder undert app folder-->
+        @section scripts {
+            <script src="~/dist/main-client.js" asp-append-version="true"></script>
+        }
+
+   
+
+    - the following typscript files under ClientApp Folder are files that support hot module 
+      loading and starting up  our application.
+          boot-client.ts
+          boot-server.ts
+
+======================================================
+  ANGULAR MATERIAL 
+ ====================================================
+ material.angular.io/
+ github.com/ajtowf/amgulamaterial
+ youtube.com/c/ajdentowfeek
+
+ =======================================
+ 1. go to nodejs.org - to install node (and npm)
+      to check version "node -v"
+      
+
+  2. www.typescriptlan.org 
+       npm install -g typescript@2.4.2
+
+       tsc --version
+
+  3. Install CLI
+      npm install -g @angular/cli
+      npm install -g yarn
+      ng --version
+
+  
+
+
+ ======================================
+ 
+ npm install --save @angular/material @angular/cdk
+ npm install --save @angular/animation
+ npm uninstall --save @angular/animation
+ npm install --save @angular/flex-layout
+ npm install  angular-in-memory-web-api --save
+
+ npm install --save @ng-bootstrap/ng-bootstrap
+ npm uninstall -g @angular/cli
+npm cache verify
+
+# if npm version is < 5 then use `npm cache clean` 
+npm install -g @angular/cli@latest
+
+Local project package:
+
+npm install --save-dev @angular/cli@latest
+npm install
+ng update @angular/cli
+
+ 1.  Go to app.module.ts and 
+        - import BrowserAnimationsModule
+        - import each material module we need: 
+           import {MatButtonModule, MatCheckboxModule} from '@angular/material' 
+          however this is cumbersome.
+ 2. It is really cumbersome. so create material.module in shared folder
+
+ 3. Import:
+      @import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; in style.css
+
+
+========================================================
+INSPECTION FILES IN AN ANGULAR PROJECT  
+
+========================================================
+Securing Angular Apps using OpenID and OAUTH2 - Noyes
+========================================================
+  Note:
+   If it is purely intranet, I would consider sticking with Windows authentication.
+   Using a token based approach is really important for open APIs, cloud based apps
+   that will be consuming multiple cloud services, etc. 
+   But if you appr and all your users are going to live in the intranet, Windows
+   auth will still be the strongest security and aligned with your users' login 
+   sessions in the domain automatically.
+
+  -  security considerations:- authentication and authentication, trasport protection
+     cross Origin sharing Cros site forgery Cross site scripting
+
+     TLS new version od SSL security protocol
+     you should be using HTTPS whenever necessary
+
+     -modern browsers have modern ways to allow Cross 
+     - CSRF cross site request forgery - authirization cookies meant for one purpuse
+       is used in other tab in browser
+     - XSSS - occurs when input from a user say a string in a text box and then inject that 
+       drectly into the dom. if that input contains certain expressions,
+      such as scripts it can be exuted into the DOM by the hacker.. angular has your back
+      on this. see troy hun on XSS
+      - use route guards to prevent users access to stuff that thery are not supposed to access.
+
+- Openid AND OAUTH2 affeects the archtecture of your anguar APP
+- usin g OpenID  provider needs a separate siteor server to implement it. Using Identity provider
+  opens the possibility for using single sign on.
+
+  - Authentication: request authentication, collecect credentials, issue temporary credentials (token)
+   for specific app/API (scope) 
+
+  - authorization: check and validate roles, lookup and validate permissions the identity provider
+   sholdnot be managing this. Then block/grant access to applcations
+
+  - Terminolgies: AUTH SERVER, AUTHORISATIO SERVER, Single Signon Server (SSO). User agent a piece of softwarwe the
+    user is interactin with. client this reopresent a oiece of softwarwe the the user is interaction with ash as 
+    back end api. Resource - the object the user is trying to access. it could be a website or database.
+    Scope: are part of the config of an identorty provider and repreents the resurces that the 
+    identity provider is trying to protect. JWT: - json web tokens - are used t oencode information about 
+    the authenticated user in an identity token and claims about what they can access.
+
+
+    OUATH2 - include web sites, mobile app aproved in 2012
+    OPENID - derivative standard for oauth2. it uses also jwt format. it standardizes for collecting
+    credentitals from user/client and issuing tokens.
+
+    IDENTITY PROVIDERS - GOOGLE FACEBOOK TWITTER. it is insufficient to rely on these providers.
+                        azure active directory V1 (no openid connect). V2 is only for mictosft account
+                        like Office 365. AAD for Business to Consumer (B2C).
+                        Identotty as a service: AuthO, Okta Ping.
+
+                        Identity Server 4- we will be using this in our Angular APP
+    
+    You could Identy Server 4 - can be hostedin the cloud or on premise. most flexible for SSO
+
+    Client Libraries youcan use:
+      angular-jwt, adal - azure active directory (not recommended)
+      MSAL - is microsfot new version of ADAL. The one Brian recommends is oidc-client
+
+    OID CONNECT - PROMOTES DECOUPLING , SSO, CENTRALIZED SECURITY MANAGEMENT
+====================================================
+Wiring up Oaut2 and Open ID connect (see module 2 and demo - m2)
+====================================================
+ - jwt - encodes a collection of claims which are just key value paor user, client app id provider and 
+    protocol and protected resource itsel. it is digitally signed but not encryptes.
+    the tokens issued by ido are ID token which contains info about the information
+    about the authenticated session or client app and Access tokens which is based on OAUTH2 protocol
+
+-  angular only uses  IMPLICIT FLOW (not atuthorization code flow and hybrid flow becausde anglar
+    cannot stored secured secret because angular runs in the browser)
+
+-  OIDC Client Library - implemets the plumbing of OID and OAUTH2
+
+- now let's dive in:
+    - first make sure you run the api and idp server in your machine
+   
+
+    - npm install -g @angular/cli
+      npm install @angular/cli
+      ng update @angular/cli 
+      
+      then run "nmp install"
+      ng s -o 
+
+    - add oidc-client
+         - npm install oidc-client --save in the root of the project
+         - create auth.service.ts in core folder (see comments)
+           install john papa's Angula V5 Snippets extension this will make adding boilerplate code for 
+           different angular constructs fast and easy just type a-
+         - now see comments in auth.service.ts.
+         - once done with AutService.ts add it to the coremodule.ts
+         - now go to app.component that sets up the menu for the App
+  
+    - add login redirectTo
+        admin@globomantics.com
+        alice@globomantics.com
+        bob@globomantics.com
+        mary@globomantics.com
+        Pw= Test123!!!
+      
+      - dont load whole angular app until you know login is successful
+      - create oidc-login-redirect.html in assets folder
+
+=============================================================
+MODULE 3 - AUTHORIZING CALLS TO YOUR BACKEND API USING OAUTH2
+=============================================================
+
+- OAUTH2 terminologies: 
+    resource owner - BACKEND
+    - resource server - website, datastore
+    - cleintsoftware that will be making calls to the server.. angular
+    - authorization server - synonymous to idp
+- OAUHT2 Grant ypes:
+    - Implicit grant type - the only matters to Angular 
+    - authorization code grant type - reuiqres that the client able to store 
+       a secret... angular can't
+    - resouirce owner password credetial grant type - designed for app
+      that has trusted relationship with STS  in particular desktop and mobile app
+      that use operating system to authenticate the user and obtain the access 
+      control token instead of the client app mangin that flow itself
+
+    - client credential grant type - this is designed for service to service 
+      communication where there is no user in the loop.
+    
+- OAUTH2 TOKEN TYPES = Access token and Refresh token 
+    JWT - represents a secured session issued by the STS 
+
+    Refresh token is not applicable to Angular app because Angular app 
+    cannot store securely JWT
+
+- STEPS IN ADDING AUTHENTICATION TO ASP.NET CORE APP 
+    - add appropriate Nuget packages: Identityserver4 
+       Instal-Package Identityserver4.AccessTokenValidation in your API project  
+
+    - Next go to startup.cs and hookup the authentication middle ware
+
+    - Next go to each controller in the API project and add the [Authorize]
+
+    - next modify config.cs in the STS project like this:
+	     public static IEnumerable<ApiResource> GetApiResources()
+        {
+            return new List<ApiResource>
+            {
+                new ApiResource("projects-api", "Projects API")
+            };
+        }
+	    
+	- next modify startup.cs in API project like this:
+          //step 2 in seeting up authentication in ASP.NET core api project
+            app.UseAuthentication();
+
+	- next add [Authorize] attribute to all controllers.
+
+   
+    - next go to angular project and open project-service.ts
+       - add import { ....,  HttpHeaders } from '@angular/common/http';
+       - inject authsrvice in the constructor:
+           constructor(private httpClient: HttpClient, private _authService: AuthService) 
+
+	   - modify project.service.ts to manually add jwt token to getProjects like this:
+
+			getProjects(): Observable<Project[]> {
+			//step3: get access token
+			var accessToken = this._authService.getAccessToken();
+			//step4: create instance of HttpHeaders and set Authorization header to
+			//bearer and provide the accessToken received from getAccessToken
+			var headers = new HttpHeaders().set('Authorization', `Bearer ${accessToken}`);
+
+			//step 4: modify get method like this:
+			return this.httpClient.get<Project[]>(Constants.apiRoot + 'Projects', { headers: headers });
+			//return this.httpClient.get<Project[]>(Constants.apiRoot + 'Projects');
+	  	}
+		
+	- adding access token manually is not good. The solution is to create an interceptor that 
+	  will automatically JWT token to the http header of every call. 
+
+    - CREATING INTERCEPTOR
+      - create auth.interceptor.ts in core folder. the fastest way is to do
+        a- using John Papas extension and select he boiler plate: http-interceptor-HttpHeaders
+        and rename it AuthInterceptor. see comments in auth.interceptor.ts
+
+      - then import your AuthInterceptor in coremodule.ts like this:
+          import { AuthInterceptor } from './auth.interceptor';
+           providers: [ 
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+    - CLAIMS PRINCIPAL - ALLOWS YOU FILTER THE DATA BASED ON WHO THE CALLER IS AND WHAT THE 
+	  CALLER CAN ACCESS.
+	    - there is a security context available to your code in the backend to make 
+		  decisions what methods a caller can access in API. In .net apps whether .NetCore or 
+		  full framework what happens is that a secuirty principal is established based on 
+		  the content of the access token.
+
+		- this principal is called "claims principal" that contain all of the claims that came 
+		  in through the access token. To get to it you can use the "user" object available
+		  in the controller (e.g. this.User) base class or you can use a static reference 
+          "Claims.Current"
+		    
+			 Note: See Projects.controller lines 40-43
+
+        -  enable filtering using claims principal based on roles, we need a relationship in the 
+		   datamodel between a userid and a project.  Go to UserPermission.cs class that links
+		   a project ot a user and it also has a value to specify what level of access that
+		   user has to the project.
+
+		- go to GetProjects() in ProjectsController all I need to do is get the value of the name 
+		  identifier claim from my claims pricipal, get the list of permissions for the UserID and 
+		  then filter the projects to return based onthiose permissions like this:
+
+		       var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                //filter the records to return based on user permissions
+                List<int> userProjectIds = _context.UserPermissions.Where(up =>
+                    up.ProjectId.HasValue && up.UserProfileId == userId).Select(up => up.ProjectId.Value).ToList();
+                return _context.Projects.Where(p => userProjectIds.Contains(p.Id));
+
+		- add UnAuthorizedComponent in "home" folder and add it 
+		  to app.module and app.routing.module
+		- then go auth-inteceptor and modify it as shown
+
+		FILTERING DATA IN THE API BASED ON 
+           - The user permission dicussed above to filter data are application-specific control
+		     mechanism, they link a particular model object for this application, a project, 
+			 to a user, and are additionally specifying a level of access to that resource, whether the 
+			 user has a View or Edit permission. 
+		   - to control permissions we do it in the backend (meaning in the API)
+
+		   - got to ProjectsController.
+		       - add   private async Task<bool> MilestoneAccessCheck(Milestone item) helper
+               - then call this helper in:
+                  AddMilestone, DeleteMilestone, UpdateMileStone
+			   - create ProjectEditAccessCheck() and add it to the following:
+			      PutProject and GetProject methods
+			      
+	- HANDLING AUTHORIZATION ERRORS
+		- one thing you want to add to the client is detecting authorization errors
+		  being returned to the client and send the users somewhere if they do occur.
+
+		- to do this is to leverage auth.interceptor to look for responses  coming back
+		  from the server in addition to modifying the request as they go out like what we have
+		  done for the authorization header.
+
+		- add Unauthorized.Component and modify auth.interceptor.ts like this:
+              //handling 401 or 403
+			return next.handle(authReq).do(() => {}, error => { 
+				var respError = error as HttpErrorResponse;
+				if (respError && (respError.status === 401 || respError.status === 403)) {
+				this._router.navigate(['/unauthorized']);
+				}
+			});
+
+   - HANDLING AUTHORIZATION DECISIONS
+	 - another thing you might want to base authorization decisions on is a "role" claim 
+	   or other custom claim. Each Identity provider will be a little different on how you 
+	   can add custom claim into the access tokens that are issued by the STS.
+
+	 - I modified IdentityServer4 code to add a "role" claim of "admin" if the admin user is logged 
+	   in. 
+         - go to CustomProfileService.cs in the STS project under the "Account" Folder and 
+		   add this code (line 33-37)
+
+		       if (user.Email == "admin@globomantics.com")
+              {
+                claims.Add(new Claim(JwtClaimTypes.Role, "Admin"));
+              }
+        - then go to  public IActionResult GetProjectUsers([FromRoute] int id) and 
+		  add [authorize(Roles="Admin")]
+
+		- do the same for PutProject and DeleteProject
+
+		- do the same for the UserPermission.Controller and AccountController classes at the controller level:
+		    [Authorize(Roles = "Admin")]
+		     
+
+
+MODULE 5 - ENAHANCING THE USER EXPERIENCE:
+	
+	1. SILENT RENWAL OF ACCESS TOKENS:
+		- access token expires
+		- need to obtain new access token to continue calling APIs. 
+		  We canot use OAUHT2 refresh access token from implicit flow.
+		  (We can only use OAUHT2 implicit flow in Angular)
+		- So what can we do? Here's the thing when you log in to an identity provider 
+		  with Implicit Flow: 
+		    1. you are just doing a form POST of the login form (just like using forms 
+			   authentication for a single website)
+			2. As a result the identity provider will typically establish a:
+			    - cookie-based secure session between the browser and the 
+				  identity provider site itself.
+				- that means any time a request is sent from the browser to the identity  
+				  provider site, the browser will send the authentication session cookie
+				  along with the request. This includes a request to obtain a new OAUTh2 
+				  authorization token. So if the expiration of the login session with the 
+				  identity provider is longer than the expiration of the authorization  
+				  token, the identity provider can support issuing a new autorization 
+				  token as long as:
+				    - the session with the STS is still active.
+					- this allows you to get the same effect as a sliding expiration 
+					  of the authorization token. (although this is not part of the protocol
+					  sounds like hacking the protocol)
+			    - authentication session cookies are also issued from the server as 
+				  HTTP-only cookies. This makes it harder for a hacker to hijack that cookie than 
+				  it is for them to hijack an OAUTH token. So it is reasonable and safe to allow 
+				  cookie-based sessions to have longer expiratins than OAuth tokens. So what 
+				  we can do is to leverage that fact is to set up some code that will go backto our 
+				  STS periodically and get a new authorization token as long as our cookie-based 
+				  session with the STS is still active.
+
+				- The this is done is to use a hidden IFrame in you app to issue request to the  
+				  authorization endpoint of your STS. That request should include a parameter 
+				  that's part of the OpenID connect protocol named "prompt" and set to false.
+				  That telss the STS to try authenticate the user without prompting or trying 
+				  to show any kind of UI, which it can succeed doing if the session cookie with the 
+				  STS is still. 
+
+				- if that call succeeds, the STS will return a new "authorization token", just 
+				  it did when the user first logged in.
+
+				- then you just throw away the old token and ude the new one for subsequent requests
+				  to your API.
+
+				- it sounds like very complicated to implement... and it is. The good news is 
+				  is you don't have to, oidc-client has already done so for you. 
+
+				- with OIDC-Client all you have to do is to tell it you want to enable a silent renew 
+				  and it will keep an eye on the expiration of the tokens it has obtain for you 
+				  and it will create the hidden iFrame for you and issue the authorization request, 
+				  and if that succeeds it will replace your existing access token inside a 
+				  user instance once it gets the new one. So let's look how this is done in a demo.
+
+	2. ENABLING SILENT RENEWAL DEMO			  
+
+
+
+
+
+===========================================================
+INSTALLING FONT-AWESOME
+
+  - npm install bootstrap font-awesome
+  - then import the styles in styles.css 
+     @import "~bootstrap/dist/css/bootstrap.min.css";
+     @import "~font-awesome/css/font-awesome.min.css";

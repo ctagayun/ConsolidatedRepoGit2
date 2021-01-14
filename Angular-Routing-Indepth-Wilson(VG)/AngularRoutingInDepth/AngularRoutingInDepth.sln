@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{35DCCD95-77B8-4B49-B313-61F3D684293B}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1-URL-Based-Routing-Using-ngRoute-MVC", "1-URL-Based-Routing-Using-ngRoute-MVC\1-URL-Based-Routing-Using-ngRoute-MVC.csproj", "{B1CEC3C4-4A64-4FB5-9EC4-FCB567B0D332}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{136D7EA1-3C9C-40E6-9108-25FCCB67DC29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2-State-Based-Routing-Using-UI-Router-MVC", "2-State-Based-Routing-Using-UI-Router-MVC\2-State-Based-Routing-Using-UI-Router-MVC.csproj", "{E756F680-744B-4663-861C-F40A58A946FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3-Advance-Routing-Using-UI-Router-MVC", "3-Advance-Routing-Using-UI-Router-MVC\3-Advance-Routing-Using-UI-Router-MVC.csproj", "{0B0A78AD-657B-471D-B19F-498912D82556}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLinqCalls", "TestLinqCalls\TestLinqCalls.csproj", "{050AE440-81E3-45C8-B66C-3486E3822CCD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B1CEC3C4-4A64-4FB5-9EC4-FCB567B0D332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1CEC3C4-4A64-4FB5-9EC4-FCB567B0D332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1CEC3C4-4A64-4FB5-9EC4-FCB567B0D332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1CEC3C4-4A64-4FB5-9EC4-FCB567B0D332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{136D7EA1-3C9C-40E6-9108-25FCCB67DC29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{136D7EA1-3C9C-40E6-9108-25FCCB67DC29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{136D7EA1-3C9C-40E6-9108-25FCCB67DC29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{136D7EA1-3C9C-40E6-9108-25FCCB67DC29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E756F680-744B-4663-861C-F40A58A946FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E756F680-744B-4663-861C-F40A58A946FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E756F680-744B-4663-861C-F40A58A946FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E756F680-744B-4663-861C-F40A58A946FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B0A78AD-657B-471D-B19F-498912D82556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B0A78AD-657B-471D-B19F-498912D82556}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B0A78AD-657B-471D-B19F-498912D82556}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B0A78AD-657B-471D-B19F-498912D82556}.Release|Any CPU.Build.0 = Release|Any CPU
+		{050AE440-81E3-45C8-B66C-3486E3822CCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{050AE440-81E3-45C8-B66C-3486E3822CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{050AE440-81E3-45C8-B66C-3486E3822CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{050AE440-81E3-45C8-B66C-3486E3822CCD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

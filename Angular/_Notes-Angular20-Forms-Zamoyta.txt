@@ -1,0 +1,63 @@
+ npm install -g @angular/cli
+  npm install @angular/cli
+  ng update @angular/cli
+  npm install
+  ng s -o 
+
+1. Observables - a proposed feature in ES2016  for managing async data
+    - it treats data as an array whose items arrive asynchronously over time
+    - treat events as a collection
+    - it is a proposed feature for ES2016 (next version of javascript)
+    - uses Reactive extensions (RxJS). Do not confuse with React
+
+========================================
+2. Angular CLI - to install npm install -g @angular/cli
+
+========================================
+3. Routing:
+    - import RouterModule
+    - RouterModule register's the router service
+    - RouterModule declares 2 directives:
+        - router-outlet
+        - router-link
+    - RouterModule exposes configured routes by passing the configured routes to the RouterModule in the
+      in the @imports section of app.module like this:
+          RouterModule.forRoot([ <--- passing an array of routes. This establishes the routes for the root of our application.
+             path: ...
+             path: ..
+             path: ...
+          ])
+    - define base element -  base: /href in the host module - ex app.module.ts
+    - define the menu in the app.component.ts using a list and the router-link directive
+      (see app.component.ts)
+    - place the router-outlet directive to the host module ex. app.comonent.ts
+
+
+    - passing parameters to route by adding router-link to anchor tag (see... product-list-component.html)
+        - to read the parameters we need to import ActivatedRoute service from @angular/Router
+        - the retrieve a parameter we can use two methods:
+            -  _route.Snapshot.paramMap.Get('parm name')  - use this if you want the initial value of the parameter
+            - Observables -but  if you expect the parameter to change without leaving the page
+               (for example if the page has a next button, the url will change because it will
+               display the next product) then use Observables
+
+        - to route programmtically:
+            - need to import and use "Router service" like this: (see product-detail.component.ts)
+               import {Router}  from @Angular/router
+               constructor (private _router: Router) 
+
+    - protecting Routes with Guards
+        - create a guard class (see product-guard.service)
+        - guard must b registered at the app.module level (see app.module.ts for the technique in implementing guard)
+
+
+========================================
+4. Angular Module:
+
+========================================
+5. Building Testing and Deploying With CLI:
+  - "ng serve o" the o automaticall opens the application in a browser. put these changes in package.json
+
+=======================================
+6 ANGULAR FORMS  - by Zamoyta
+    -

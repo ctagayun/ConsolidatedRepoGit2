@@ -1,0 +1,1562 @@
+
+ 
+ - download NPM from this lik www.npmjs.com 
+   ---> 
+ - got to https://nodejs.org/en/download/current/ and download node.js msi
+ - run the npm install
+
+ - How to setup an Angular2 Project
+   - to manually setup Angular 2 Application - go t0 www.angular.io
+   - github.com/angular/quickstart or
+   - go to github.com/angular/angular-cli to use AngularCLI
+   - use Starter Files --> go to github.com/deborahK/Angular2-GettingStarted
+
+To hide typescript generated files in VS Code;
+-go to preferences-->settings-->workspace
+/ Place your settings in this file to overwrite default and user settings.
+{
+   "files.exclude":{
+      "app/**/*.js":true,
+      "app/**/*.js.map":true
+   } 
+}
+
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/*.js.map": true,
+        "**/*.js": {"when": "$(basename).ts"}
+    }
+}
+
+- ctrl + e shortcut to search for files 
+
+- go to www.angular.io ---> tools and libraries -- UI Components --> ng2-bootstrap
+
+
+==============================================================================
+
+Mark Zamoyta's Building Angular 2.0 Framework
+==============================================================================
+https://github.com/angular/angular-cli
+https://github.com/angular/angular-cli#updating-angular-cli
+
+1. Download node.js.
+   - go  to https://nodejs.org/en/download/current/ and download node.js msi
+   - run the npm install
+2. To Instal CLI: nmp install -g @angular/cli
+
+   -g means global so that you will be able to access CLI from any folder
+
+  - To display version of CLI = ng --version
+
+3. To Create and setup a Project using CLI
+   - ng new green-nations
+   - type cd green-nations
+   - type "ng-serve" to start development web server
+   - go to a browser and type "localahost:4200" to run the application you should see "app works!"
+
+   - next install bootstrap: type 
+       - next run npm install --save bootstrap
+       - go to https://github.com/angular/angular.cli  and copy ../node_modules/bootstrap/dist/css/bootstrap.css
+       - open angular-cli.json and navigate to line 20 thru 22
+         and paste  "../node_modules/bootstrap/dist/css/bootstrap.css" to the apps[0].styles array
+        
+          Note: "styles.css" inside line 20 thru 22 is our global css located in "src" folder
+
+   - now install the font
+       - go to https://fonts.google.com
+       - click the the + positive sign of Open Sans font 
+         and then click to open dialog
+         and then copy the CDN link appearing below STANDARD
+         and then go to "src" folder and open index.html and paste the CDN link after
+         href="favicon.ico"
+
+       - then go back to the selected google font dialog and copy this font-family: 'Open Sans', sans-serif;
+         appearing below Specify in CSS.
+         And then open style.css located inside src folder and create the body of style.css which is our global css
+         like this and paste inside it font-family: 'Open Sans', sans-serif;: 
+            body{
+               font-family: 'Open Sans', sans-serif;
+            }
+
+   - now look at the "App" folder
+
+
+1. USER INTERFACE LAYOUT
+============================================================================
+CREATING THE SPA FRAMEWORK MODULE
+
+To generate a module using CLI
+- ctrl + backtick tobring up built in command prompt
+- enter ng g module fw -  "ng g module" means generate module - (note: fw is the module name)
+  this command will create fw.module.ts under app folder.drag it and put it under src folder
+  - import fw.module.ts in app.module.ts entering the following
+    import {FwModule} from '../fw/fw.module';  //.. means go up to root folder, then look for "fw" foder and then look for file fw.module
+- now let's create a Component
+    - ng g component FrameworkBody --prefix=false --spec=false --skip-import=true 
+      (--prefix to prevent CLI from giving a prefix of @)
+    - now drag and drop the frameworkbody folder under fw folder
+
+- Now let us put our FrameworkBody to work
+    - go to the root app.component.html and enter the fw-framework-body selector like this:
+      <fw-framework-body></fw-framework-body>
+    - now import the component in fw.module.ts like this:
+      import { FrameworkBodyComponent } from './framework-body/framework-body.component';
+    - and then add the component in declarations array of fe.module.ts and export it like this: 
+       declarations: [
+         FrameworkBodyComponent
+        ],
+       exports: [
+         FrameworkBodyComponent
+        ]
+    
+=================================================================================
+UNDERTANDING FLEXBOXES
+- A MORE MODERN WAY OF RENDERING A PAGE
+- flexbox CSS properties:
+    - display:flex
+    - flex-direction:row (default)
+    - flex-direction:column - this actually the main layout of the application
+    - flex-grow: 1 - the number 1 is a ratio. header and footers have flex-grow: 0 (default)
+
+=================================================================================
+
+DEVELOPING THE FRAMEWORKBODY CLASS
+- you need to put :host selector in framework-body.component.css so that framework body tag can be access.
+  (see framework-body.component.css)
+
+- NOW LET US CREATE THE CONTENT AREA OF framework-body.component.html
+
+    - first let's create a our  content Component
+        ng g component Content --spec=false --prefix=false --skip-import=true
+
+    - grab the ContentComponent out of App and put it in Fw folder
+    - add a "fw" prefix to selector: in content.component.ts to look like this: "fw-content"
+    - of course lets import it like this in the ts.module
+       import { ContentComponent } from './content/content.component';
+      - and then add the component in declarations array of fe.module.ts and export it like this: 
+       declarations: [
+         ContentComponent
+        ],
+       exports: [
+         FrameworkBodyComponeContentComponentnt
+        ]
+
+     - now let us create some css rules in content.component.css
+ 
+ -  NOW LET US CREATE THE HEADER OR TITLE BAR OF framework-body.component.html
+
+    - first let's create a our  content Component
+        ng g component TitleBar --spec=false --prefix=false --skip-import=true
+
+    - grab the TitleBarComponent out of App and put it in Fw folder
+    - add a "fw" prefix to selector: in titlebar.component.ts to look like this: "fw-title-bar"
+    - of course lets import it like this in the ts.module
+       import { TitleBarComponent } from './title-bar/title-bar.component';
+      - and then add the component in declarations array of fe.module.ts and export it like this: 
+       declarations: [
+         TitleBarComponent
+        ],
+       exports: [
+         TitleBarComponent
+        ]
+
+     - now go to title-bar.component.html and create this:
+
+        <div class="title-bar">
+           <img src="assets/logo.png" alt="Green Nations Logo">
+          <div class="menu-area" >
+           
+           <!--menu-->
+       </div>
+      </div>
+
+     - now let us create some css rules in title-bar.component.css
+                 :host {
+                    display: flex;
+                }
+
+                .title-bar {
+                    flex-grow: 1;
+                    display: flex;
+                    min-height: 80px;
+                }
+
+                .menu-area {
+                    display: flex; 
+                    flex-direction: column; 
+                    flex-grow: 1;
+                    padding-right: 20px;
+                }
+
+
+2. CONFIGURATION, STYLING AND RESPONSIVENESS
+====================================================================================
+(1). CREATING THE FRAMEWORK SERVICE
+
+ - create a folder under fw folder and name it "services"
+ - first let's create CONFIGURATION service
+        -  ng g service FrameworkConfig --spec=false  
+        - drag FrameworkConfig from app to services folder under fw folder
+
+ - next setp see code added to framework-config.service.ts
+
+ - next import this service in fw.module.ts like this:
+    import { FrameworkConfigService } from './services/framework-config.service';
+
+ - next add FrameworkConfigService in the declarations and provider arrays of fw.module.ts like this:
+      declarations: [
+          FrameworkConfigService
+      ],
+      providers: [
+        FrameworkConfigService
+      ]
+
+ - How do we use this service??
+    - go to app.cmponent.ts (this is the application consuming this framework) and
+      create a constructor like this: 
+        constructor (private frameworkConfigService: FrameworkConfigService) {
+    - then import FrameworkConfigService like this:
+        import { FrameworkConfigService, FrameworkConfigSettings } from '../fw/services/framework-config.service';
+    - then put logic in the constructor that will populate an instance of interface  FrameworkConfigSettings 
+      (see lines 16-34 in app.component.ts) and pass this instance to configure() method FrameworkConfigService.
+
+(2). CREATING THE TITLE BAR COMPONENT
+     - first let's create a our  content Component
+        ng g component TitleBar --spec=false --prefix=false --skip-import=true
+
+    - grab the TitleBarComponent out of App and put it in Fw folder
+    - add a "fw" prefix to selector: in titlebar.component.ts to look like this: "fw-title-bar"
+    - of course lets import it like this in the ts.module
+       import { TitleBarComponent } from './title-bar/title-bar.component';
+      - and then add the component in declarations array of fe.module.ts and export it like this: 
+       declarations: [
+         TitleBarComponent
+        ],
+       exports: [
+         TitleBarComponent
+        ]
+     
+     - then go to title-bar.component.html and add this code:
+        <div class="title-bar">
+          <img src="assets/logo.png" alt="Green Nations Logo"> <!--Logo area -->
+          <div class="menu-area" > <!--Menu area-->
+             
+              
+          </div>
+
+  (3). CREATING  THE TOP BAR COMPONENT
+      - first let's create a our  content Component
+        ng g component TopBar --spec=false --prefix=false --skip-import=true
+
+    - grab the TopBarComponent out of App and put it in Fw folder
+    - add a "fw" prefix to selector: in titlebar.component.ts to look like this: "fw-title-bar"
+    - of course lets import it like this in the ts.module
+       import { TopBarComponent } from './top-bar/top-bar.component';
+      - and then add the component in declarations array of fe.module.ts and export it like this: 
+       declarations: [
+         TopBarComponent
+        ],
+       exports: [
+         TopComponent
+        ]
+      - go to top-bar.component and import and inject FrameworkConfigService like this:
+          -  import { FrameworkConfigService } from '../services/framework-config.service';
+          -  constructor(private frameworkConfigService: FrameworkConfigService) { }
+
+     - now go to top-bar.component.htnl and add the following code:
+
+          <!--We are going to loop through our socialIcons array. We need to import 
+          and inject FramwworkConfigService in top-bar-component.ts -->
+          <a *ngFor="let icon of frameworkConfigService.socialIcons" 
+              [href]="icon.link"
+              [title]="icon.alt">
+              <img 
+                  class="top-image"
+                  [src]="icon.imageFile"
+                  [alt]="icon.alt">
+          </a>  
+
+          <div *ngIf="frameworkConfigService.showLanguageSelector">
+              <img class="flag-image" src="assets/barbados-flag-bw.png" alt="Flag">
+              <span>BAJAN</span><span class="glyphicon glyphicon-chevron-down"></span>
+          </div>
+
+          <div *ngIf="frameworkConfigService.showUserControls">
+              <span>SIGN IN</span>
+          </div>
+
+      - now go to top-bar.component.css and enter the CSS rules
+
+      - now go to title-bar.component.html and enter fw-top-bar like this:
+          <div class="menu-area" > 
+            <fw-top-bar>      
+            </fw-top-bar>
+         </div>
+
+
+
+  (4)  STYLING THE TOP BAR COMPONENT
+      - go to title-bar.component.css. the easiest way to override the background color is 
+        to override the background-color of the .title-bar class like this in the
+        style.css (located in the root)
+
+            -.title-bar{
+                    background-color: red !important; /**/
+                }
+      - but the above is confusing. The best way is to create a new class(let us call it user-title-bar 
+        and use it in title-bar.component.html like this: 
+
+               <div class="title-bar user-title-bar">   
+                   .....
+              </div>
+              
+       - user-title-bar is what the user of the
+         framework to override the background color and other properties:
+
+
+  (5)  CREATING THE STATUS BAR COMPONENT
+      - first let's create a our  content Component
+          ng g component status-bar --spec=false --prefix=false --skip-import=true
+
+      - grab the StatusBarComponent out of App and put it in Fw folder
+      - add a "fw" prefix to selector: in statusbar.component.ts to look like this: "fw-title-bar"
+      - of course lets import it like this in the ts.module
+        import { StatusBarComponent } from './statuse-bar/status-bar.component';
+        - and then add the component in declarations array of fe.module.ts and export it like this: 
+        declarations: [
+          StatusBarComponent
+          ],
+        exports: [
+          StatusBarComponent
+          ]
+    - then go to title-bar.component.html and add this code:
+        <div class="title-bar">
+          <img src="assets/logo.png" alt="Green Nations Logo"> <!--Logo area -->
+          <div class="menu-area" > <!--Menu area-->
+             ...
+              <fw-status-bar>
+              </fw-status-bar>
+            
+        </div
+
+   - then go to status-bar.component.css and add this CSS rules:
+        :host{
+        background-color: green;
+        min-height:26px;
+         }
+
+   - then go to Framework-Body.Component.html and add this code:
+          <fw-status-bar>   </fw-status-bar>
+
+(6) BUILDING SCREEN SERVICE
+    - SEE NOTES IN SCREEN.SERVICE.TS
+
+ 
+(7) MAKING THE TITLE BAR RESPONSIVE
+    - go to title-bar.component.ts and import ScreenService like this:
+        import { ScreenService } from '../services/screen.service';
+    - then inject  inject our screenservice.ts into the constructor
+
+    -  then go to title-bar.component.html 
+
+    - then go to title-bar.compoenent and add the following css rules to make title-bar reponsive:
+
+            .title-bar-small {
+                flex-grow: 1;
+                display: flex;
+                min-height: 56px;
+            }
+
+            .small-image-holder {
+                flex-grow: 1;
+            }
+
+            .small-image {
+                height: 50px;
+            }
+
+            span {
+                margin-left: 10px;
+                margin-right: 20px;
+                font-size: 25px;
+                line-height: 50px;
+            }
+
+     - TO TEST GO TO CHROME HIT F12 AND CLICK THE DEVICE ICON ON THE LEFT SIDE OF THE DEVELOPER SCREEN
+
+(8) BUILDING RESPONSIVE DIRECTIVE
+    - create a folder called "directive" under fw folder
+    - add a file screen-large-directive.ts
+    - add a file screen-beolw-large-directive.ts
+    - add these two directives to the imports in fw.module.ts file
+      and add it to the declarations array like this:
+             declarations: [
+                ScreenLarge,
+                ScreenBelowLarge
+            ],
+    
+ (9) UNSUBSCRIBING FROM OBSERVABLES
+    - import OnDestroy like this in screen-large-directive.ts and screen-beolw-large-directive.ts like this:
+        import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
+
+    - import subscription like this:
+        import { Subscription } from 'rxjs/Subscription';
+    
+    - create an instance of subscription like this:
+        private screenSubscription: Subscription;
+
+    - initialize screenSubscription property in the constructor like this:
+         this.screenSubscription = screenService.resize$.subscribe(() => this.onResize());
+
+    - implement OnDestroy like this:
+         ngOnDestroy() {
+                this.screenSubscription.unsubscribe();
+            }
+
+=========================================================================================
+
+3. MENUS AND NAVIGATION
+
+    (1) Create the menu.service.ts
+        - create menu.service under the services folder
+        - create and interface in menu.services.ts like this:
+            export interface MenuItems {
+
+            }
+
+        - import { MenuService } from './services/menu.service'; in fw.module.ts
+
+        - add MenuService to the providers array in fw.module.ts
+
+        - go to app folder and create app.menu.ts. This file will hold our menU data
+
+        - then go to app.component.ts  and inject our MenuService and do the following: 
+                - import { MenuService } from '../fw/services/menu.service';
+                - populate the menuItems property of the MenuService like this:
+                     menuService.items = initialMenuItems;
+                  initialMenuItems is an array variable defined in app.menu.ts in "app" folder
+        
+         - NOW LET US CREATE OUR MENU COMPONENT
+               - ng g component menu --spec=false --prefix=false --skip-import=true
+
+               - grab the MenuComponent out of App and put it in menus folder under Fw folder
+
+              - add a "fw" prefix to selector: in menu.component.ts to look like this: "fw-menu"
+
+              - then of course import and declare our menu.component in fw.module.ts like this:
+                    import { MenuComponent } from './menus/menu/menu.component';
+
+        - then go to menu.component.html and build our menu:
+            <nav> (use a nav tag)
+                <ul> (unordered list)
+                    <li *ngFor="let item of menuService.items">
+                    <!--<fw-menu-item [item]="item">
+                    </fw-menu-item>-->
+                    </li>
+                </ul>
+            </nav>
+
+        - now of course let's hook the menu. go to title-bar.component.html and add <fw-menu> </menu>
+          like this:
+            <div *screenLarge class="title-bar user-title-bar">   
+                <img src="assets/logo.png" alt="Green Nations Logo"> <!--Logo area -->
+                <div class="menu-area" > 
+                    <fw-top-bar>      
+                    </fw-top-bar>
+                    <fw-menu> </fw-menu> -- this is the Menu.Component
+                </div>
+            </div>
+
+        - then go to menu.component.css and enter the following css rules:
+            :host {
+                    display: flex;  - resize to the size of the screen
+                    align-items: flex-end;  - makes sure that the item aligns to theleft side of the flexbox
+                    justify-content: flex-end; - makes sure the items appears at the bottom of the flexbox
+                    flex-grow: 1; - 1 means it will grow with the size of the screen
+                }
+                ul {
+                    list-style-type: none; - none will get rid of the bullet points
+                    margin: 0;
+                    padding: 0;
+                }
+                li {
+                    display: inline; - we are working on a horizontal menu, this will make sure the items will appear in one line
+                }
+    ============================================           
+    (2) SHOWING THE MENU ITEM
+       
+          Let's create menu-item component
+
+          - ng g component menu-item --spec=false --prefix=false --skip-import=true
+
+          - grab the MenuComponent out of App and put it in menus folder under Fw folder
+
+          - add a "fw" prefix to selector: in menu-item.component.ts to look like this: "fw-menu"
+
+          - then of course import and declare our menu-item.component in fw.module.ts like this:
+                    import { MenuItemComponent } from './menus/menu-item/menu-item.component';
+
+           - now of course let's hook the menu. go to menu.component.html and add <fw-menu-item> </menu>-item> like this:
+                <nav>
+                    <ul>
+                        <li *ngFor="let item of menuService.items">
+                          <fw-menu-item [item]="item"> // remember we are passing this an "item" we need an input for that.
+                          </fw-menu-item>
+                        </li>
+                    </ul>
+                </nav>
+
+           - here <fw-menu-item [item]="item">  we are passing  an "item". we need an input for that.
+             go to menu-item-component.ts and add these:
+                 import { Component, OnInit, Input } from '@angular/core'; -- add "Input"
+                 import { MenuItem } from '../../services/menu.service';
+                 @Input() item: MenuItem;
+
+           - now go to menu-item.component.html and add the following code:
+                <div class="menu-item">
+                    <span class="glyphicon {{ item.icon }}"></span> <!-- show the icon first. this one-way binding  -->
+                    <span>{{ item.text.toUpperCase() }}</span> <!--shw the text -->
+                </div>
+
+           - go to menu-item.css an add  css rules. 
+    ============================================            
+    (2) ROUTING AND NAVIGATION
+
+        - first thing to do is setup our router-oulet in contentcomponent.html in "content" folder under "fw" folder because??????? 
+           
+            <div class="body-style">  <!-- let us wrap it up in a div so that we can style it -->
+                <router-outlet> </router-outlet>
+            </div>
+
+        - then go content.component.css and define our css rules
+
+        - now we are ready to create components we can route to. Let us look at app.menu.ts under "app" folder
+          you will see we have 3 routes: Dashboard, Countries, and settings. Because we removed --skip-import=true
+          CLI will automatically add the import statements to app.module.ts including entries in the 
+          declaration array.
+
+              -  create Dashboard under app folder: 
+                    ng g component dashboard --spec=false  
+
+              -  create Countries app folder: 
+                    ng g component countries --spec=false  
+
+              -  create Settings app folder: 
+                    ng g component settings --spec=false  
+          
+        - let us create app.routimg.ts file under "app" folder. this file contains the route for the dashboard, countries and
+          and settings components like this:
+                import { DashboardComponent } from './dashboard/dashboard.component';
+                import { CountriesComponent } from './countries/countries.component';
+                import { SettingsComponent } from './settings/settings.component';
+          and then create an "AppRoute" array like this:
+                 //this is our array of routes and need to be exported
+                export const appRoutes: Routes = [  
+                { path: 'dashboard', component: DashboardComponent },  //dashboard will execute the DashBoardComponent
+                { path: 'countries', component: CountriesComponent },  //countries will execute the ContriesComponent
+                { path: 'settings', component: SettingsComponent },    //settings will execute the SettingsComponent
+                { path: '', component: DashboardComponent },
+                { path: '**', component: DashboardComponent }
+                ];
+
+          and then got to app.module.ts and enter this import statements :
+               -import { appRoutes } from './app.routing';
+               -import { RouterModule } from '@angular/router';  
+               - imports: [
+                            ....
+                            RouterModule.forRoot(appRoutes), 
+                        ],
+              Note: if we did not define the array variable "appRoutes" in app.routing.ts we can enter like below:
+              // RouterModule.forRoot([  //Step2 Routing: before we can navigate to a route, we need to ensure the route is available to the app by passing  
+                                         //an array of routes to the routing module like this. Note all the routes are inside an array
+                                         //if you want to use hash add this at the end of the array {useHash:true}
+               // { path: 'welcome', component: WelcomeComponent },
+               // { path: '', redirectTo: 'welcome', pathMatch: 'full' }, //default route. requires pathMatch
+               // { path: '**', redirectTo: 'welcome', pathMatch: 'full' } //denotes a wildcard path. executed if no match to any of the defined routes
+               //    ]),
+
+           - finally go to fw.module and add this imports:
+                import { RouterModule } from '@angular/router';
+                 imports: [
+                       ...
+                        RouterModule
+                    ],
+           - TO RESOLVE "MenuItem" was not found (exported interface not found) even it is defined correctly in menu.service.ts like this
+                  export interface MenuItem {
+                        text: string,
+                        icon: string,  //we will use GlyphIcons of bootstrap
+                        route: string
+                        ...
+                    }
+
+              go to https//github.com/angular/angular-cli/issues/2034
+
+                // @Input() item: MenuItem;
+                @Input() item = <MenuItem> null; //work around to "MenuItem" was not found. See angular-cli issue #2034
+
+        ============================================        
+        (3) ROUTERLINK AND ROUTERLINK ACTIVE
+            - go to menu-item.component.htl and add routerLink like this:
+
+                    <div class="menu-item" 
+                        [routerLink]="item.route" 
+                        routerLinkActive="router-link-active"> // router-link-active is a css rule
+                        ...
+                    </div>
+            - go to menu-item.css and add this rule:
+                .router-link-active {
+                    background-color: #dfd; //set background color to green when selected
+                }
+
+         ============================================
+         (4). CREATING A VERTICAL MENU
+             - WILL NEED TO MAKE USE OF *NGIF or just take our menu and style it with CSS
+
+             - first lookk at menu.service.ts. 
+                 - add a variable isVertical = true;  
+
+             - go to title-bar.component.html and add an *ngIf statement like this:
+               <!-- Menu goes here. show the menu here (title-bar.component) if isVertical=false otherwise show it in content-component.html-->
+                <fw-menu *ngIf="!menuService.isVertical">
+                </fw-menu>
+
+              - go to content.component.html and add an *ngIf statement like this:
+                   add this code: <fw-menu *ngIf="menuService.isVertical" class="vertical-menu">
+                                    </fw-menu>
+                   then inject MenuService in content-menu-component.ts  like this: constructor(private menuService: MenuService) { }
+
+              - now go to menu.component.css and add a host: selector like this to style our menu:
+                    :host(.vertical-menu) {
+                        display: inline-block;
+                        width: 200px;
+                        padding-left: 4px;
+                        flex-grow: 0;
+                        background-color: #555;
+                        overflow: auto;
+                    }
+
+
+              - but we need to style our menu items as well. so go to menu-item.component.ts and
+                add the folowing css rules to style out menu items:
+                    :host(.vertical-menu) {
+                        display: block;  - means you want each item in its own line
+                        margin-left: 0;
+                        margin-top: 6px;
+                        margin-bottom: 6px;
+                        color: white;
+                        }
+
+                     .menu-item.vertical-menu {
+                            padding: 6px 6px 6px 0;  /* padding for items in vertical menu */
+                        }
+
+                    .menu-item.vertical-menu:hover {
+                            background-color: green;
+                        }
+
+                        .router-link-active.vertical-menu {
+                            background-color: green;
+                        }
+               - now go to menu.component.html and specify the class [ngClass]="{'vertical-menu': menuService.isVertical }">
+                       this means if menuService.isVertical is true, add class vertical-menu
+                       <div class="menu-item"
+                            [routerLink]="item.route"
+                            routerLinkActive="router-link-active"
+                            [ngClass]="{'vertical-menu': menuService.isVertical }">
+                            <span class="glyphicon {{ item.icon }}"></span>
+                            <span>{{ item.text.toUpperCase() }}</span>
+                        </div>
+                - we also need to add  [ngClass]="{'vertical-menu': menuService.isVertical to menu-item.component.html like this:
+                       <div class="menu-item"
+                            [routerLink]="item.route"
+                            routerLinkActive="router-link-active"
+                            [ngClass]="{'vertical-menu': menuService.isVertical }">
+                            <span class="glyphicon {{ item.icon }}"></span>
+                            <span>{{ item.text.toUpperCase() }}</span>
+                        </div>
+
+                        and inject MenuService in the constructor like this: constructor(private menuService: MenuService) { }
+
+                        
+                - finally we make sure our MenuService is injected in our Title-Bar.component.ts like this:
+                         constructor(private screenService: ScreenService,
+                          private menuService: MenuService) { }
+
+                        and  import { MenuService } from '../services/menu.service';
+
+        (5) SMALL SCREEN MENUS
+            - LET US START LOOKING AT OUR menu.service
+                - add  showingLeftSideMenu = false;
+
+            - add the following method:
+                 toggleLeftSideMenu() : void {
+                    this.isVertical = true;
+                    //simply toggles the flag
+                    this.showingLeftSideMenu = !this.showingLeftSideMenu;
+                }
+
+            - go to title-bar.component.html and add a click event like this:
+                - <div *screenBelowLarge class="title-bar-small">
+                    <span class="glyphicon glyphicon-menu-hamburger"
+                        (click)="menuService.toggleLeftSideMenu()"> //this fired when the hamburger icon is clicked
+                    </span>
+                    ....
+                  </div>
+
+                - now let us go to content.component.html and replace the <fwMenu></fwMenu> with the following:
+                    <fw-menu 
+                        //this means if isVertical=true and isLarge=true then we show the menu
+                            or
+                        // if showingLeftSideMen = true and isLarge is not large we show the menu
+                        *ngIf="menuService.isVertical && screenService.isLarge() || menuService.showingLeftSideMenu && !screenService.isLarge()"
+                        class="vertical-menu">
+                    </fw-menu>
+
+                - then we go to content.component.ts and inject ScreenService like this:
+                     import { ScreenService } from '../services/screen.service';
+                     constructor(private menuService: MenuService,
+                     private screenService: ScreenService) { }
+
+                - to fix ipad menu when hamburger icon is clicked
+                     - go to menu.servicde.ts and add this code to the toggleLeftSideMenu() method:
+                        toggleLeftSideMenu() : void {
+                         this.isVertical = true;
+                         ...
+                    }
+
+                - go to menu-item.component.html and add a click event like this:
+                    <div class="menu-item"
+                       .....
+                        (click)="menuService.showingLeftSideMenu = false">
+                        ....
+                    </div>
+
+=============================== ==========================================================
+4. ADVANCE MENU FEATURES
+
+   (1) SWITCHING MENU ORIENTATION
+        - open menu.service.ts and add the following method that toogles isVerticgal flag
+            toggleMenuOrientation() {
+            this.isVertical = !this.isVertical;
+        }
+  
+        - go to menu.component.html and add a button using the following code:
+            <!-- this will put a button on the vertical menu that will be used to toggle a vertical menu to a horizontal menu-->
+            <button 
+                *ngIf="!menuService.showingLeftSideMenu" //if if is not showingLeftSideMenu - meaning the small menu
+                class="btn btn-sm"
+                [ngClass]="{'horizontal': !menuService.isVertical }" //if not isVertical add the horizontal class
+                (click)="menuService.toggleMenuOrientation()">  //will call the method in our menu.service.ts
+               <span *ngIf="menuService.isVertical" class="glyphicon glyphicon-menu-up"></span>  //if menu isVertical=true do this
+               <span *ngIf="!menuService.isVertical" class="glyphicon glyphicon-menu-left"></span> //if not isVertical do this
+            </button>
+
+        - go to menu.component.css and add the following rules to adjust margins a little bit
+                button {
+                    margin-top: 20px;
+                }
+                button.horizontal {
+                    margin-left: 20px;
+                    margin-bottom: 2px;
+                }
+
+      =========================================
+     (2) SETUP MENU DATA AND ROUTES FOR POPUP MENU
+
+        - go to app.menu.ts and paste new menu/submenu data. take note of submenu property, it is now populated with data except "Dashboard"
+          remember if there is no submenu route should be null.
+
+        - now let us create   component for the following routes (no need to create countries component because it has submenu under it)
+            ng g component country-detail --spec=false
+            ng g component country-list --spec=false
+            ng g component country-maint --spec=false
+
+        - now let us create the PopUp Menu component
+             - ng g component popup-menu --spec=false --prefix=false --skip-import=true
+             - drag and drop our popup menu folder to menus folder in fw folder 
+             - inject MenuService in popup-menu.component.ts
+             - add this import import { PopupMenuComponent } from './menus/popup-menu/popup-menu.component'; in fw.moudle.ts
+             - add this to declarations array of fw.module.ts: PopupMenuComponent
+             - add the following code to popup-menu.compenent.ts
+                     @Input() menu: Array<MenuItem>; - /import the menu data structure into array variable "menu:" of type <MenuItem>
+                     WE WILL REFRENCE THIS ARRAY IN popup-mmenu.component.ts and iterate through it.
+             - now go to popup.componnent.html and add this html:
+                    <!--iterate through the "menu" array we imported in popup.component.ts -->
+                    <li *ngFor="let item of menu">
+                    <fw-menu-item 
+                        [ngClass]="{'vertical-menu': menuService.isVertical }"
+                        [item]="item" <!--one way binding bind item to item -->
+                        class="in-popup" //this will allow us to style the popup
+                        >
+                    </fw-menu-item>
+                </li>
+             - NOW GO TO POPUP-MENU.COMPONENT.CSS and paste this rule:
+
+                    :host {  /*this is for styling  fw-popup menu tag */
+                        position: absolute; /* the position is aboslute because a popup can float around the screen bt it is usually
+                                            // apears below the menu item  we select */
+                        display: inline-block;
+                        width: 162px;
+                        background-color: white;
+                        border: 1px solid black;
+                        box-shadow: 1px 1px 5px #aaa;
+                    }
+
+                    //styling for vertical popup menu. we dont really have popup. the sub menu appears
+                    //below the main menu item
+                    :host(.vertical-menu) {
+                        position: static; /* this a rule for vertical menu. we dont really have popup. the sub-item is embedded below the item. */
+                        display: block;
+                        width: 100%;
+                        background-color: transparent;
+                        border: none;
+                        box-shadow: none;
+                        padding: 2px 0 0 0;
+
+       =========================================                 
+      (3) SHOWING THE POPUP MENU 
+            open menu-item.component.html and put this code:
+               - <fw-popup.menu> </fw-popup-menu> - this is selector of popup-menu.component.ts
+
+               - then add the following attributes (see popup-menu.component.html for explanation of each attribute)
+                <fw-popup-menu
+                    *ngIf="mouseInPopup || mouseInItem"  - show popup only whenn mouseInPopUp or mouseinItem
+                    [menu]='item.submenu'  - bind to menu property of popup-menu.componenet.ts. we are going to set
+                                              it to item.submenu (means the selected item and then the submenu of selected item)
+                                       
+                    [ngClass]="{'vertical-menu': menuService.isVertical}"
+                    (mouseleave)="onPopupMouseLeave($event)" 
+                    (mouseenter)="onPopupMouseEnter($event)"
+                    [style.left.px]="popupLeft"
+                    [style.top.px]="popupTop">
+                </fw-popup-menu>
+
+                - open menu-item.component.ts
+                    -  add the following to the import: import { Component, OnInit, Input } from '@angular/core';
+                       ElementRef
+                       HostBinding
+                       HostListener
+                       Renderer
+                    - add import { Router } from '@angular/router';
+
+                - go to app.routing.ts and setup our routing like this:
+                    import { Routes } from '@angular/router';
+
+                    import { DashboardComponent } from './dashboard/dashboard.component';
+                    import { CountryListComponent } from './country-list/country-list.component';
+                    import { CountryDetailComponent } from './country-detail/country-detail.component';
+                    import { CountryMaintComponent } from './country-maint/country-maint.component';
+                    import { SettingsComponent } from './settings/settings.component';
+
+                    export const appRoutes: Routes = [  
+                    { path: 'dashboard', component: DashboardComponent },
+                    { path: 'country-list/:count', component: CountryListComponent },
+                    { path: 'country-detail/:country', component: CountryDetailComponent },
+                    { path: 'country-maint', component: CountryMaintComponent },
+                    { path: 'settings', component: SettingsComponent },
+                    { path: '', component: DashboardComponent },
+                    { path: '**', component: DashboardComponent }
+                    ];
+
+                - see explanation of code added to menu-item.component.ts
+
+        ========================================================
+        (4) SHOWING ACTIVE ROUTES
+            - go to menu-item.component.html
+            - go to menu-item.component.ts and add these code:
+                    checkActiveRoute(route: string) {
+                        this.isActiveRoute = (route == '/' + this.item.route);
+                    }
+            - import NavigationEnd -  import {NavigationEnd, Router } from '@angular/router';
+            - add the following code in ngInit: 
+                     this.checkActiveRoute(this.router.url);
+
+                    this.router.events
+                        .subscribe((event) => {
+                            if (event instanceof NavigationEnd) {
+                                this.checkActiveRoute(event.url);
+                                //console.log(event.url + ' ' + this.item.route + ' ' + this.isActiveRoute);
+                            }
+                        });
+
+       ========================================================
+        (5) ADDNG ARROW INDICATORS:
+            - OPEN MENU-ITEM.COMPONENT.HTML and add the following:
+
+                <span *ngIf="item.submenu && !parentIsPopup && !menuService.isVertical" 
+                        class="glyphicon glyphicon-menu-down"></span>
+                <span *ngIf="item.submenu && parentIsPopup && !menuService.isVertical" 
+                        class="glyphicon glyphicon-menu-right"></span>
+                <span *ngIf="item.submenu && menuService.isVertical && !(mouseInPopup || mouseInItem)" 
+                        class="glyphicon glyphicon-menu-left"></span> 
+                <span *ngIf="item.submenu && menuService.isVertical && (mouseInPopup || mouseInItem)" 
+                        class="glyphicon glyphicon-menu-down"></span> 
+
+      ========================================================
+        (6) ANIMATING POPUPS
+            - open menu.item.component.ts
+            - import the following:
+                     trigger, state, style, transition, animate - these are animation-related modules
+            - add the following:
+                        animations: [ //visibility change is the trigger and we are passing it an array
+                            trigger('visibilityChanged', [
+                                transition(':enter', [   // :enter is alias to 'void => *' - which menas DOM not ready yet
+                                    style({opacity:0}),
+                                    animate(250, style({opacity:1})) - animate it to opacity of 1 - opacity is from 0 to 1
+                                ]),
+                                transition(':leave', [   // :leave is alias to '* => void' - means it is moving from visual state to moving out of the DOM
+                                    animate(100, style({opacity:0})) - animate it with time span of 100 with opacity of 0
+                                ])
+                            ])
+                        ]
+                    })
+
+               Note: put visibilityChange trigger directly in the popUp menu we want to use.
+                     so go to menu-item.component.html and add it as attribute of
+                     <fw-popup-menu> </fw-popup-menu> like this:
+                     <fw-popup-menu
+                        *ngIf="mouseInPopup || mouseInItem" 
+                        ......
+                        @visibilityChanged>
+                    </fw-popup-menu>
+
+
+            - now go to menu-item.component.html and the following attribute to <fw-popup-menu> </fw-popupmenu>
+                <fw-popup-menu
+                    ....
+                    @visibilitychanged>
+            </fw-popup-menu>
+
+        ========================================================
+        (6) TESTING ON SMALL DEVICES
+
+            GO TO MENU-ITEM.COMPONENT.HTML AND TAKE OUT THIS HANDLER
+                 (click)="menuService.showingLeftSideMenu = false"> <!-- showingLeftSideMenu to false-->
+
+
+4. USER CONTROLS (Logging in and Logging out)
+====================================================================================
+    - go to app.routing.ts and change routing to look like this:
+            import { Routes } from '@angular/router';
+
+            import { AuthenticatedUserComponent } from './authenticated-user/authenticated-user.component';
+            import { DashboardComponent } from './dashboard/dashboard.component';
+            import { CountryListComponent } from './country-list/country-list.component';
+            import { CountryDetailComponent } from './country-detail/country-detail.component';
+            import { CountryMaintComponent } from './country-maint/country-maint.component';
+            import { SettingsComponent } from './settings/settings.component';
+
+            export const appRoutes: Routes = [  
+            { path: 'signin', component: SignInComponent },
+            { path: 'authenticated', component: AuthenticatedUserComponent,
+                children: [
+                { path: 'dashboard', component: DashboardComponent },
+                { path: 'country-list/:count', component: CountryListComponent },
+                { path: 'country-detail/:country', component: CountryDetailComponent },
+                { path: 'country-maint', component: CountryMaintComponent },
+                { path: 'settings', component: SettingsComponent },
+                ] },
+            { path: '', component: SignInComponent },
+            { path: '**', component: SignInComponent }
+            ];
+
+     - CREATE AUTHENTICATED-USER COMPONENT at the app folder LEVEL
+
+           (1) CREATE THE AUTHENTICATED.USER COMPONENT:
+
+                ng g component authenticated-user --spec=false 
+
+                
+                - now go to authenticated-user.html and add this code:
+                    <fw-framework-body></fw-framework-body>
+
+                - AND THEN GO TO app.component.html to setup a CONTENT AREA FOR ROUTING.
+                - replace  <fw-framework-body></fw-framework-body> with
+                    <router-outlet></router-outlet>. we removed <fw-framework-body></fw-framework-body> 
+                    because  <fw-framework-body></fw-framework-body> now is in authenticated-user.compoennt.html.
+
+                - app.component.html NOW becomes our main router outlet.
+
+                - If you look at app.routing.ts 
+                you can see that SignInComponent and AuthenticatedUserComponent will be placed
+                in main "appRoutes" Route variable
+
+                    export const appRoutes: Routes = [  
+                        { path: 'signin', component: SignInComponent },
+                        { path: 'authenticated', component: AuthenticatedUserComponent,
+                            children: [
+                            { path: 'dashboard', component: DashboardComponent },
+                            { path: 'country-list/:count', component: CountryListComponent },
+                            { path: 'country-detail/:country', component: CountryDetailComponent },
+                            { path: 'country-maint', component: CountryMaintComponent },
+                            { path: 'settings', component: SettingsComponent },
+                            ] },
+                        { path: '', component: SignInComponent },
+                        { path: '**', component: SignInComponent }
+                        ];
+                    
+
+                - if you at the following the child route from dashboard down to settings, these are all 
+                child routes and MUST BE PLACED IN A SEPARATE ROUTER OULET. IF YOU LIKE AT OUR FRAMEWORK framework.body.component.html
+                you will see we have a contnet area <fw-content> </fw-content> and if you look at contnet.component.html
+                this is where our SECONDARY OUTLET
+
+                        children: [
+                            { path: 'dashboard', component: DashboardComponent },
+                            { path: 'country-list/:count', component: CountryListComponent },
+                            { path: 'country-detail/:country', component: CountryDetailComponent },
+                            { path: 'country-maint', component: CountryMaintComponent },
+                            { path: 'settings', component: SettingsComponent },
+                            ] },
+ 
+         ====================================================
+         (2) CREATE THE SIGNIN COMPONENT:    
+             - create users folder under "fw" folder
+
+             -  ng g component sign-in --spec=false  --prefix=false --skip-import=true   
+             - drag sign-in component folder from app folder and drop it in users folder in fw folder
+             - open sign-in.compnent.ts and change and fw prefix to sign-in like this:
+                     selector: 'fw-sign-in',
+              
+             - sign-in.component to fw.module.ts like this:
+                import { SignInComponent } from './users/sign-in/sign-in.component';
+                declarations: [
+                    ....
+                    SignInComponent
+                ],        
+              - add import to app.routing.ts like this:
+                    import { SignInComponent } from '../fw/users/sign-in/sign-in.component';
+
+              - open sign-in.component.html and paste code for the template-driven form 
+
+         (3) CREATE THE REGISTRATION FORM:
+         ======================================================    
+             
+             -  ng g component register-user --spec=false  --prefix=false --skip-import=true   
+             - drag register-user component folder from app folder and drop it in users folder in fw folder
+             - open register-user.compnent.ts and change and fw prefix to sign-in like this:
+                     selector: 'fw-register-user',
+              
+             - register-user.component to fw.module.ts like this:
+               import { RegisterUserComponent } from './users/register-user/register-user.component';
+                declarations: [
+                    ....
+                    RegisterUserComponent
+                ],        
+              - add import to app.routing.ts like this:
+                   import { RegisterUserComponent } from '../fw/users/register-user/register-user.component';
+
+            
+              - go to app.routing.ts and add ths route:
+                   import { RegisterUserComponent } from '../fw/users/register-user/register-user.component';
+                   and add the following path like this:
+                    { path: 'register', component: RegisterUserComponent,
+
+              - go to register-user.component.html and create the regstration template
+                      
+              - go to register-user.component.css and create css styling rules
+
+
+          (4) DEPENDENCY INJECTION AND CLASS INTERFACES
+          =======================================================
+           
+            - user service belongs to the application therefore there's no way we can inject the
+              service in the sign-in form. The form has no knowledge of the application and that is good.
+            
+            - angular dependenct injection doesn't work with interfaces at all. so we cannot create a "User API Interface"
+              in the framework and the "app" implements "User API Interface". The reason for this is interfaces are
+              Typescripts so when the compilation is complete, the interface dissapears there's no more leftover
+              artifacts left for dependnecy injection.
+
+            - So how does Angular solve dependency injection from our framework? Angular has a concept of "Class-Interface"
+              it will not dissapear after the compilation is complete. It is implemented as abstract class. 
+
+            - So we will create an abstract in our framework and then the app will implement the abstract class. This will
+              allow us to inject our  "User Service" (defined in the app) into our Sign-In form (defined in the framework)
+
+                - create an abstract class in users folder and call it "user-api-ts" in the framework
+
+                - next create our user service in the application.
+
+                - abd then create a services folder and create file user-service.ts  and paste code and
+                  import  import { UserApi } from '../../fw/users/user-api'; and then implement the
+                  user-api abstract class like this:
+                            @Injectable()
+                            export class UserService implements UserApi {
+
+                            isAuthenticated = false;
+
+                            constructor() { }
+
+                            //here we implement the signIn method of the abstract class
+                            signIn(username: string, password: string, rememberMe: boolean): Observable<any> {
+                                console.log('UserService.signIn: ' + username + ' ' + password + ' ' + rememberMe);
+                                this.isAuthenticated = true;
+                                return Observable.of({});
+                            }
+
+                 - next inject the UserService (defimed in the app) into our Sign In form in the framework. 
+                   Open file sign-in.component.ts and inject UserApi in the constructor like this:
+                        constructor(private userApi: UserApi) { }
+
+              
+               ANGULAR DEPENDENCY INJECTION CONCEPTS:
+                  - go to app.module.ts and add thee import statements:
+                        import { UserService } from './services/user.service';
+                        import { UserApi } from '../fw/users/user-api';
+
+                  - and enter the following provider statements:
+                        providers: [
+                            UserService,
+                            { provide: UserApi, useExisting: UserService } //this means find the token called UserApi
+                                                                           //and use an existing provider called UserService
+                        ],
+                   - now we can inject our user service in to our sign in form. Go to sign-in.component.ts.
+                     Pay attention to the comments.
+
+               HANDLING SIGNIN ERRORS:
+                   - LET US SIMULATE AN ERROR. Go to user.service.ts and simulate an error by returning: 
+                       // this.isAuthenticated = true;
+                       // return Observable.of({}).delay(2000);
+                       return Observable.of({}).delay(2000).flatMap(x=>Observable.throw('Invalid User Name and/or Password'));
+                          - Observable.of({}).delay(2000). - this is for simulating a delay
+                          - flatMap(x=>Observable.throw('Invalid User Name and/or Password')); here we return a real observable
+                           
+         (4) USING ROUTE GUARDS TO AUTHORIZE ROUTES:
+          =======================================================  
+            - create auth-guard.service in app/services folder   
+           
+            - go to app.routing.ts and add the following:
+                  { path: '..., canActivate: [AuthGuard],
+                 import { AuthGuard } from './services/auth-guard.service';
+
+            - go to app.module.ts and add the following:
+                import { AuthGuard } from './services/auth-guard.service';
+                    providers: [
+                        UserService,
+                        { provide: UserApi, useExisting: UserService },
+                        AuthGuard
+                    ],
+            - to authenticate sub-path, add "canActivateChild:[AuthGuard] to app.routing.ts
+            - go to app.menu.ts and change route like this: add/authenticated to each sub-menu
+                    submenu: [
+                    {
+                        text: 'USA',
+                        icon: 'glyphicon-flag',
+                        route: 'authenticated/country-detail/USA',
+                        submenu: null
+                    },
+                    {
+                        text: 'India',
+                        icon: 'glyphicon-flag',
+                        route: 'authenticated/country-detail/India',
+                        submenu: null
+                    },
+                    {
+                        text: 'Switzerland',
+                        icon: 'glyphicon-flag',
+                        route: 'authenticated/country-detail/Switzerland',
+                        submenu: null
+                    }
+                ]
+            - finally go to aut-guard.services abd add this method  for canActivateChild guard:
+                     canActivateChild() : boolean {
+                            return this.canActivate();
+                        }
+
+            (5) SIGNING OUT
+           =======================================================  
+            - we need a signout out link
+            - the sign out happens in the framework and we need to call the UserService defined in the app.
+            - go to abstract class Use-Api.ts and add the following method signature:
+                 signOut : () => Observable<any>;
+
+            - go to top-bar.componenet.ts and inject UserApi like this:
+                 constructor(private frameworkConfigService: FrameworkConfigService,
+                 private userApi: UserApi) { }
+
+              and add this import statement: import { UserApi } from '../users/user-api';
+
+              and add the signOut() method:
+                  signOut() {
+                        this.userApi.signOut();
+                    }
+
+              and then go to top-bar.component.html and add the following code:
+                    <div *ngIf="frameworkConfigService.showUserControls">
+                        <span>Chito Tagayun</span>
+                        <span class="sign-out" (click)="signOut()">SIGN OUT</span>
+                    </div>
+
+              and go to top-bar.component.css and add the following:
+                    .sign-out {
+                        margin-left: 12px;
+                        cursor: pointer;
+                    }
+
+            - finally go to user-service.ts in app and add the following import statement:
+                  import { Router } from '@angular/router';
+
+                  and inject the router in the constructor like this: 
+                    constructor(private router: Router) { }
+
+                  and implement the SignOut() methid like this:
+                      signOut(): Observable<any> {
+                            this.isAuthenticated = false;
+                            this.router.navigate(['/signin']);
+                            return Observable.of({});
+                        }         
+  
+6.  FORMS AND CRUD OPERATIONS
+===================================================
+    (1) - create a folder under app and call it view-models
+        - create a file call country.ts - this is or view  model
+        - go to services folder under app:
+            -  create app-data.services.ts
+            -  add this import statement in app.module.ts
+                import { AppDataService } from './services/app-data.service';
+            - add AppDataService in the provider array of app.module.ts
+                    providers: [
+                        UserService,
+                        { provide: UserApi, useExisting: UserService },
+                        AuthGuard,
+                        AppDataService
+                    ],
+        - create country-maint folder under app:
+            - create the country-maint.component
+            - go to app.routing.and add this route;
+                    { path: 'country-maint', component: CountryMaintComponent },
+            - create html of country-maint.html
+
+    =====================================================
+    (2) SHOWING COUNTRY DETAIL PAGE - country-detail.component.html
+
+        - create country-detail.component under app folder
+            - go to app.routing.ts and add this route:
+                 { path: 'country-detail/:id/:operation', component: CountryDetailComponent },
+                 parameter=id and operation
+            - go country-maint.component.html and note that if Details button is clicked
+              and executes showCountryDetail(row.id) passing the row-id. that's the id of the country
+
+                    <button class="btn btn-sm btn-primary"
+                        (click)="showCountryDetail(row.id)">
+                        Details
+                    </button>
+                    
+                     
+                     //this method simply sends us to /authenticated/country-detail' route
+                     showCountryDetail(id: number) {
+                          this.router.navigate(['/authenticated/country-detail', id, 'details']);
+                     }
+              -  now go to country-detail.component.ts in app folder
+                 - you will note that OnInit is implemented because we are passing parameters. It is in
+                   ngInit that we parse the parameters like this:
+                     ngOnInit() {
+                            this.operation = this.route.snapshot.params['operation'];
+
+                            if (this.operation === 'create') {
+                            this.country = { id: 0, name: "", epiIndex: null };
+                            }
+                            else
+                            this.dataService.getCountry(this.route.snapshot.params['id'])
+                                .subscribe((country: Country) => this.country = country);
+                        }
+                   - refer to notes in country-detail.component.ts
+                   - go to country-detail.component.html 
+                        -add <fw-dynamic-form> </dynamic-form> tag 
+                        - inside tag add the following:
+                                [vm]="country"    //pass the view model
+                                [vmDefinition]="countryDefinition" //pass the countryDefinition
+                                [operation]="operation" //could be create, udate, delete, details operation
+                                [errorMessage]="errorMessage" //pass the error mssage to the form if you want
+                                (update)="updateCountry($event)" //if update updateCountry gets called
+                                (create)="createCountry($event)" //if create createCountry gets called
+
+        - GO TO app.routing.ts:
+            - change country-detail path to:  { path: 'country-detail/:id/:operation', component: CountryDetailComponent },
+              first parameter is row-id followed by operation (this could assume values such as details, update, delete..)
+
+       
+
+        =====================================================
+        (3) CREATING DYNAMIC FORMS
+             - create dynamic-forms folder under fw 
+
+            - create dynamic-field component under fw/dynamic-form
+            - create dynamic-form component under fw/dynamic-forms folder - THIS IS THE COMPONENT RESPONSIBLE
+              FOR CREATING THE FIELDS AND PROPERTIES OF A DYNAMIC FORM. BE SURE TO EXPORT IT IN fw.module.ts
+
+            - in creating dynamic forms need to use reactive forms
+r
+
+            - go to fw.module.ts and import ReactiveFormsModule like this:
+                import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+                imports: [
+                    ....
+                    ReactiveFormsModule
+                ],         
+            - and add the following import statements:
+                import { DynamicFormComponent } from './dynamic-forms/dynamic-form/dynamic-form.component';
+                import { DynamicFieldComponent } from './dynamic-forms/dynamic-field/dynamic-field.component';
+                
+                add the following to declarations array:
+                    DynamicFormComponent,
+                    DynamicFieldComponent
+
+                and be sure to export DynamicFormmComponent in fw.module.ts . If you dont export it you will not be able to access
+                it from the application. No need to export DynamicFieldComponent.
+                     exports: [
+                        DynamicFormComponent
+                    ]
+       
+           =====================================================
+        (4) CREATING DYNAMIC FIELDS
+            - viewmodel is very important it is what we use to generate dynamc fields.
+            - go to dynamic-form.component.hmtl to see how the fields are created dynamically
+
+
+           =====================================================
+        (5) BUILDING A READ-ONLY DETAILS FORM
+            - look at country-maint.component.html in app folder
+                     <button class="btn btn-sm btn-primary"
+                        (click)="showCountryDetail(row.id)">  <!--Details button: onClick execute this method defined in country-maint.component.ts -->
+                        Details
+                     </button> 
+
+                    // this is the implementation of { path: 'country-detail/:id/:operation', component: CountryDetailComponent },
+                    //in app.routing.ts
+                    //row id followed by oeration which in this case is "details"
+
+                    showCountryDetail(id: number) {
+                        //this method simply sends us to /authenticated/country-detail route passing 2 parameters
+                        //id and operations which in this case is "details"
+                        this.router.navigate(['/authenticated/country-detail', id, 'details']);
+                    }  
+                    
+             - now look at country-detail.component.ts in app, this is the code that gets executed:
+                    -  else
+                        // get country lookup using country id
+                        this.dataService.getCountry(this.route.snapshot.params['id'])
+                            .subscribe((country: Country) => this.country = country);
+
+                    - if we look at the country-detail.compontn.html, you can see that we are CALLING the 
+                    dynamic form (e.g. fw-dynamic-form.component) and pass the [operation] = "operation" which in
+                    this case is "details"
+                            <fw-dynamic-form
+                                ....
+                                [operation]="operation"
+                                [errorMessage]="errorMessage" - IN THIS CASE READONLY "details"
+                                (update)="updateCountry($event)"
+                                (create)="createCountry($event)"
+                                >
+                                </fw-dynamic-form>
+
+              - now let us look at the dynamic-form-component.HTML which is being called By country-detail.component.html above
+                        <div *ngFor="let field of vmDefinition">
+
+                            //we build our dynamic field and the operation in this case is "details"
+                            <fw-dynamic-field [field]="field" 
+                                                [form]="form" 
+                                                [operation]="operation" 
+                                                [submitted]="submitted">
+                            </fw-dynamic-field>
+                          </div>
+
+                           //the operation is "details" so this block of code will be executed (show this div) based on ngIf
+                          <div *ngIf="operation === 'details'">
+                                <button type="button" class="btn" (click)="onBack()" >Back</button>
+                                <button type="button" class="btn btn-primary" (click)="onEdit()" >Edit</button>
+                          </div>
+
+                - now go to dynamic-form.component.ts and look at the definition of onBack() and onEdit()
+                             onBack() {
+                                this.errorMessage = null;
+                                this.location.back();
+                            }
+
+           =====================================================
+          (5) BUILDING AN UPDATE FORM USING OUR DYNAMIC FORM:
+
+              -  look at country-maint.component.html in app folder:
+
+                   -  <button class="btn btn-sm btn-warning"
+                        (click)="editCountry(row.id)">    - row id is passed to editCountry()
+                        Edit
+                     </button>
+
+                   - when Edit button is clicked you are taken to country-maint.component.ts in app and this code is executed: 
+
+                        editCountry(id: number) {
+                            this.router.navigate(['/authenticated/country-detail', id, 'edit']); // "edit" as the operation is hard coded.
+                        }
+
+                        - the above method will to /authenticated/country-detail' route. Let's take a look at country-detail.component.html
+                          
+
+                - if we look at the country-detail.component.html, you can see that we are CALLING the 
+                    dynamic form (e.g. fw-dynamic-form.component) and pass the [operation] = "operation" which in
+                    this case is "edit"
+                            <fw-dynamic-form
+                                [vm]="country"
+                                [vmDefinition]="countryDefinition"
+                                [operation]="operation"
+                                [errorMessage]="errorMessage"
+                                (update)="updateCountry($event)"
+                                (create)="createCountry($event)"
+                                                            >
+                            </fw-dynamic-form>
+
+                 - now let us look at the dynamic-form-component.HTML which is being called By country-detail.component.html above
+                        - <div *ngFor="let field of vmDefinition">
+
+                            //we build our dynamic field and the operation in this case is "edit"
+                            <fw-dynamic-field [field]="field" 
+                                                [form]="form" 
+                                                [operation]="operation" 
+                                                [submitted]="submitted">
+                            </fw-dynamic-field>
+                          </div>
+
+                        -  the operation is "edit" so this block of code will be executed (show this div) based on ngIf
+                           <div *ngIf="operation === 'edit'">
+                                <button type="button" class="btn" (click)="onCancel()" >Cancel</button>
+                                <button type="button" class="btn btn-primary" (click)="onSave()" >Save</button>
+                            </div>
+                         
+                        - -now go to dynamic-form.component.ts and look at the definition of onCancel() and onSave()
+                              (1) onSave() {
+                                    this.submitted = true;  //first set the submitted flag to true
+                                    if (this.form.valid) {  
+                                    this.status = 'waiting'; 
+                                    this.update.emit(this.form.value); //call our output event emitter .update
+                                                                        //see @Output() update: EventEmitter<any> = new EventEmitter(); above
+                                                                        //this.form.value is our view model. The value of our reactive 
+                                                                        //form will be our view model
+                                                                        //because that's the way we set it up. 
+                                                                        //if you want to see how we set it up.. 
+                                                                        //go to country-detail.component.html where our dynamic form is created                                                       //our dynamic form is created
+
+                                    } 
+
+                                    - so let us revisit country-detail.component.html in app to see how our dynamic form is created
+                                            <fw-dynamic-form
+                                                    [vm]="country"
+                                                    [vmDefinition]="countryDefinition"
+                                                    [operation]="operation"
+                                                    [errorMessage]="errorMessage"
+                                                    (update)="updateCountry($event)" - calling updateCountry passing it $event which is our view model
+                                                                                     - go to country-detail.component.ts to see updateCountry
+                                                    (create)="createCountry($event)"
+                                                    >
+                                            </fw-dynamic-form>
+
+                                             // Country is our view model
+                                            updateCountry(country: Country) {
+                                                this.errorMessage = null;
+
+                                                //dataservice.updateCountry passing it "Country" view model
+                                                this.dataService.updateCountry(country).subscribe(
+                                                c => this.router.navigate(['/authenticated/country-maint']),
+                                                err => this.errorMessage = 'Error updating country'
+                                                );
+                                            }
+
+                               (2)  onCancel() {
+                                        this.onBack();
+                                    }
+           
+         =====================================================
+        (6) CREATING A NEW COUNTRY
+            - go to country-maint.component.html:
+                button class="btn btn-primary" (click)="createCountry()">Add New Country</button>
+            
+            -  when this button is clicked it executes this code in country-maint-component.ts. and 
+               executes this method. This method simply   to '/authenticated/country-detail'
+               passing the parameter 0 and operations which in this case is "create"
+                   createCountry() {
+                        this.router.navigate(['/authenticated/country-detail', 0, 'create']);
+                    }
+
+            - now open country-detail.component.html:
+                 - you can see tha we create our dynamic form passing it an operation (create in this case).
+                   notice the create handler.
+
+                   We are calling dynamic-form.component so we go first to dynamic-form.component.html.
+
+                             <!-- call dynamic-form.compoenent.html -->
+                                    <fw-dynamic-form
+                                    [vm]="country"
+                                    [vmDefinition]="countryDefinition"
+                                    [operation]="operation"
+                                    [errorMessage]="errorMessage"
+                                    (update)="updateCountry($event)"
+                                    (create)="createCountry($event)"
+                                    >
+                            </fw-dynamic-form>
+
+                 - so open dynamic-form.component.html  and look at this code:
+                        <div *ngIf="operation === 'create'">
+                            <button type="button" class="btn" (click)="onBack()" >Back</button>
+                            <button type="button" class="btn btn-primary" (click)="onCreate()" >Create</button>
+                        </div>
+                           
+                - this is the onCreate() method in dynamic-form.component.ts:
+                        onCreate() {
+                            this.submitted = true;  
+                            if (this.form.valid) {
+                            this.status = 'waiting';
+                            this.create.emit(this.form.value); //call create.emit. .this.form.value is our view model
+                                                                //call our output event emitter .create see @Output() create: EventEmitter<any> = new EventEmitter(); above
+                                                                //this.form.value is our view model. The value of our reactive form will be our view model
+                                                                //because that's the way we set it up. 
+                                                                //if you want to see how we set it up.. go to country-detail.component.html where 
+                                                                //our dynamic form is created
+                                    }
+                                }
+
+         =====================================================
+        (6) DELETE A COUNTRY
+            - FIRST GO T OCOUNTRY-MAINT.COMPONENT.HTML
+                    <button class="btn btn-sm btn-danger"
+                        (click)="deleteCountryQuestion(row.id)">  - pass row-id which is the key of the record 
+                        Delete
+                    </button>
+              
+             deleteCountryQuestion(id:number) {
+                    this.deleteError = null;
+                    this.deleteId = id;
+                }
+
+             - that's all we need to do the rest is handled by country-maint.componet.html
+                 If row-id is equal to row to be deletedid property country-maint.compenent.ts
+                 and isDeleting = false then show this div
+
+                 <td *ngIf="row.id === deleteId && !isDeleting"> <!--Show this column only if ... -->
+                        Delete this country?
+                        <button class="btn btn-sm" (click)="cancelDelete()">Cancel</button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteCountry(row.id)">Delete</button>
+                        <p *ngIf="deleteError">{{ deleteError }}</p>
+                  </td>
+
+                  <td *ngIf="row.id === deleteId && isDeleting"> <!--Show this column only if ... -->
+                        Deleting...
+                  </td>
+
+
+              - (click)="deleteCountry(row.id) - go to country-maint.component.ts
+                        //on success call this.cancelDelete() method to reset our flags
+                        // err => { this.deleteError = err; this.isDeleting = false; } - on error set deleteError property to err
+                        //and set isDeleting to false. This will cause the error message to show up
+                        deleteCountry(id: number) {
+                            this.isDeleting = true;
+                            this.dataService.deleteCountry(id).subscribe(
+                            c => this.cancelDelete(),
+                            err => { this.deleteError = err; this.isDeleting = false; }
+                            );
+                        }
+
+         =====================================================
+        (7) VIEWING DYNAMIC FORMS ON SMALL DEVICES

@@ -1,0 +1,11 @@
+1. Project Setup
+   - go to  https://github.com/angular/angular2-seed
+   - download angular2-seed
+   - do npm install (download node.js first)
+   - start server by doing "npm strt" from a command prompt
+   - type localhost:3000 in a browser to start application
+
+2. Template Driven forms
+   - go to getbootstrap.com and copy and paste this link to oue index.html
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">

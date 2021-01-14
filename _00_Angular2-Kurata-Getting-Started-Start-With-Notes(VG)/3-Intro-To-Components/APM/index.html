@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <title>Acme Product Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="app/app.component.css" rel="stylesheet" />
+
+    <!-- Polyfill(s) for older browsers.
+        Contains scripts to load up libraries we need
+     -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+
+    <!-- Configure SystemJS.
+     Contains scripts to load 3rd party libraries and our own module-->
+    <script src="systemjs.config.js"></script>
+
+<!-- this script starts our application by loading ES2015 module that is in the path "app".
+     ES2015 Module is just a code that imports or exports something. How does systemjs.config.js 
+     know which file in the "app" path to load? It is defined in the systemjs.config.js
+ --> 
+    <script>
+          System.import('app').catch(function(err){ console.error(err); });
+    </script>
+</head>
+
+<!-- this means that we are hosting our angular application here. The component name is called pm-app defined in
+     in the app.component.ts
+ -->
+<body>
+    <pm-app>Loading App...</pm-app>
+</body>
+
+</html>

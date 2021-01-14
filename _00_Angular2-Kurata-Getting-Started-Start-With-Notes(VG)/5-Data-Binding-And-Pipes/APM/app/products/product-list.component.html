@@ -1,0 +1,83 @@
+<div class='panel panel-primary'>
+    <div class='panel-heading'>
+        {{pageTitle}}
+    </div>
+    <div class='panel-body'>
+        <div class='row'>
+            <div class='col-md-2'>Filter by:</div>
+            <div class='col-md-4'>
+                <!-- the achieve 2-way binding use the [(ngModel)] directive
+                don't forget to add FormsModule in the appsModule. FormsModule exposes ngModel directive
+                 -->
+                <input type='text' [(ngModel)]='listFilter' />
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-6'>
+                <h3>Filtered by: {{listFilter}} </h3>
+            </div>
+        </div>
+        <div class='table-responsive'>
+            <table class='table'
+                   *ngIf='products && products.length'>
+                <thead>
+                    <tr>
+                        <th>
+                            <!--onClick event execute toggleImage() method of the product-list.component.ts
+                            for list of DOM events go to:https://developer.mozilla.org/en-us/docs/web/events -->
+                            <button class='btn btn-primary'
+                                (click)='toggleImage()'>
+
+                                <!-- if bool showImage is true change text of the button to "Show Image" or "Hide Image" -->
+                                {{showImage ? 'Hide' : 'Show'}} Image
+                            </button>
+                        </th>
+                        <th>Product</th>
+                        <th>Code</th>
+                        <th>Available</th>
+                        <th>Price</th>
+                        <th>5 Star Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- "let" creates the variable product -->
+                    <tr *ngFor='let product of products'>
+                        <td>
+                            <!--if bool showImage = true add this image to the DOM
+                            This is an example of property binding (e.g. style.width 
+                            and title are properties of the <img> tag.
+                            -->
+                            <img *ngIf='showImage' 
+                                [src]='product.imageUrl'
+                                [title]='product.productName'
+                                [style.width.px]='imageWidth'
+                                [style.margin.px]='imageMargin'>
+                        </td>
+                        <td>{{ product.productName }}</td>
+                        <!-- "Pipes" transform product code to lower case -->
+                        <td>{{ product.productCode | lowercase }}</td>
+                        <td>{{ product.releaseDate }}</td>
+                         <!-- "Pipes" transform values before it is displayed. In this case USD currency dollar sign.
+                         currency:'USD':true:'1.2-2" 1 means at least 1 digit to the left of the decimal
+                         and 2-2 means at least 2 digits to the right of the decimal point and no more than 2 digits."
+                         "true" displays the $ sign
+                         -->
+                        <td>{{ product.price | currency:'USD':true:'1.2-2'}}</td>
+                        <td>{{ product.starRating }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--
+    - Property binding (as opposed to interpolation), enclosed property in square bracket
+     Example:
+       <img *ngIf='showImage'
+                                [src]='product.imageUrl'
+                                [title]='product.productName'
+                                [style.width.px]='imageWidth'
+                                [style.margin.px]='imageMargin'>
+    - if  {{showImage ? 'Hide' : 'Show'}} is true Hide the Image otherwise show it
+    -->

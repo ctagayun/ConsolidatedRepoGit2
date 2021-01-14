@@ -1,0 +1,665 @@
+ - npm install -g @angular/cli
+  npm install @angular/cli
+  ng update @angular/cli 
+ npm install
+  ng s -o 
+
+========================================================
+Securing Angular Apps using OpenID and OAUTH2 - Noyes Jul 2018
+========================================================
+  Terminologies:
+
+     JWT - Jason web Token are the format used to encode information about the
+           authenticated user in an identity token and claims about what they access
+           in the form of scopes in an access tokens
+
+     IDENTITY PROVIDER - provides authentication, authorization and single sign on (SSO)
+
+     STS of Identity Provider (synonymous) - SECURITY TOKEN SERVICE
+
+  Note:
+   If it is purely intranet, I would consider sticking with Windows authentication.
+   Using a token based approach is really important for open APIs, cloud based apps
+   that will be consuming multiple cloud services, etc. 
+   But if you appr and all your users are going to live in the intranet, Windows
+   auth will still be the strongest security and aligned with your users' login 
+   sessions in the domain automatically.
+
+  -  security considerations:- authentication and authentication, trasport protection
+     cross Origin sharing Cros site forgery Cross site scripting
+
+     TLS new version od SSL security protocol
+     you should be using HTTPS whenever necessary
+
+     -modern browsers have modern ways to allow Cross 
+     - CSRF cross site request forgery - authirization cookies meant for one purpuse
+       is used in other tab in browser
+     - XSSS - occurs when input from a user say a string in a text box and then inject that 
+       drectly into the dom. if that input contains certain expressions,
+      such as scripts it can be exuted into the DOM by the hacker.. angular has your back
+      on this. see troy hun on XSS
+      - use route guards to prevent users access to stuff that thery are not supposed to access.
+
+- Openid AND OAUTH2 affects the archtecture of your anguar APP
+- usin g OpenID  provider needs a separate siteor server to implement it. Using Identity provider
+  opens the possibility for using single sign on.
+
+  - Authentication: request authentication, collecect credentials, issue temporary credentials (token)
+   for specific app/API (scope) 
+
+  - authorization: check and validate roles, lookup and validate permissions the identity provider
+   sholdnot be managing this. Then block/grant access to applcations
+
+  - Terminolgies: AUTH SERVER, AUTHORISATIO SERVER, Single Signon Server (SSO). User agent a piece of softwarwe the
+    user is interactin with. client this reopresent a oiece of softwarwe the the user is interaction with ash as 
+    back end api. Resource - the object the user is trying to access. it could be a website or database.
+    Scope: are part of the config of an identorty provider and repreents the resurces that the 
+    identity provider is trying to protect. JWT: - json web tokens - are used t oencode information about 
+    the authenticated user in an identity token and claims about what they can access.
+
+
+    OUATH2 - include web sites, mobile app aproved in 2012
+    OPENID - derivative standard for oauth2. it uses also jwt format. it standardizes for collecting
+    credentitals from user/client and issuing tokens.
+
+    IDENTITY PROVIDERS - GOOGLE FACEBOOK TWITTER. it is insufficient to rely on these providers.
+                        azure active directory V1 (no openid connect). V2 is only for mictosft account
+                        like Office 365. AAD for Business to Consumer (B2C).
+                        Identotty as a service: AuthO, Okta Ping.
+
+                        Identity Server 4- we will be using this in our Angular APP
+
+  ==============================================
+    USING IDENTITY SERVER4 AS STS (Oprn Source)
+    ============================================
+    - you have to host it yourself.
+    - requires some codinh and configuration
+
+    - Identity Server 4 - can be hosted in the cloud or on premise. most flexible for SSO
+  
+    - Identity Server 4- had been certified as protocol compliant by OpenID Foundation.
+
+     - Javascript Client Libraries options that will help you implement OpenID Connect 
+       and OAUTH2 in your Angular Code:
+
+          angular-jwt
+          ADAL - azure active directory (not recommended) unless your Identity Provider will
+                 be Azure Active Directory.
+          - if your identity provider is Azure Active Directory, microsoft has anew version of ADAL   
+            named MSAL. this is designed to be protocvol-compliant with OIDC
+            As of March 2918 MSAL is still in preview status. Not sure when microsoft will
+            release what the call "General Availability" version.
+
+          -  The one Brian recommends is oidc-client. Certified full compliant with OpenID connect.
+
+
+
+    OID CONNECT - PROMOTES DECOUPLING , SSO, CENTRALIZED SECURITY MANAGEMENT
+
+====================================================
+Wiring up Oaut2 and Open ID connect (see module 2 and demo - m2)
+====================================================
+ - jwt - encodes a collection of claims which are just key value paor user, client app id provider and 
+    protocol and protected resource itsel. it is digitally signed but not encryptes.
+    the tokens issued by ido are ID token which contains info about the information
+    about the authenticated session or client app and Access tokens which is based on OAUTH2 protocol
+
+-  angular only uses  IMPLICIT FLOW (not atuthorization code flow and hybrid flow becausde anglar
+    cannot stored secured secret because angular runs in the browser)
+
+-  OIDC Client Library - implemets the plumbing of OID and OAUTH2
+
+- now let's dive in:
+    - first make sure you run the api and idp server in your machine
+   
+    ====================================================
+      M2 - AUTHENTICATING WITH OPENID CONNECT
+    ====================================================
+        - Open Client and API in m2
+
+        - npm install -g @angular/cli
+          npm install @angular/cli
+          ng update @angular/cli 
+          
+          then run "npm install"
+          ng s -o 
+
+        - deploy the API project to Azure using the name: "mysecuringangularapps-api"
+
+        - to run locally (instead of azure) - configure API and STS Projects to run as console app:
+            - right click project --> startup project --> click IIS -select "Securing AngularApps.API"
+            - do the same for "SecuringAngularApps.STS"
+            - then right click solution --> properties --> Select Multiple startup 
+                - select Securing AngularApps.API 
+                - select SecuringAngularApps.STS
+            - click F5 (Debug) 
+            - you should see 2 console windows
+
+            - go to Angular Project. open constant.cs. modify the code like this
+                   //public static apiRoot = 'https://securingangularappscourse-api.azurewebsites.net/api/';
+                  //public static stsAuthority = "https://securingangularappscourse-sts.azurewebsites.net/";
+
+                  public static apiRoot = 'http://localhost:2112/';
+                  public static stsAuthority = 'http://localhost:4242/';
+        ===============================================
+        - Step 1: next add oidc-client and auth service
+        ================================================
+
+            - npm install oidc-client --save   in the root of the project
+
+            - then create auth.service.ts in core folder (see comments)
+              install john papa's Angular V5 Snippets extension this will make adding boilerplate code for 
+              different angular constructs fast and easy by doing the following:
+                - create new file and call it aut.service.ts 
+                - inside this file type a- 
+                - select the appropriate template which in this case is a service
+
+            - now see comments in auth.service.ts and app.component and config.cs of SecuringAngularApps.STS
+                - add login(method) to be called from the view  and call UserManager.signinredirect
+                 
+                - once done with AuthService.ts add it to the coremodule.ts to
+                  finish its definition and setup its use
+
+            - now go to app.component and add a call to the login() service
+
+            - now do a ng serve -o and click login. we should be redirected to the STS login screen
+      
+        - Step 2: next add login to the Application
+            - to do this we ask the UserManamer in the Auth.Service to do that for us.
+              - add a login() methid in the Auth.Service
+            admin@globomantics.com
+            alice@globomantics.com
+            bob@globomantics.com
+            mary@globomantics.com
+            Pw= Test123!!!
+          
+          - dont load whole angular app until you know login is successful
+          - create oidc-login-redirect.html in assets folder
+=============================================================
+HOW TO INSPECT JWT TOKENS USING FIDDLER
+
+   - start Fiddler 
+   - go to oidc-login-redirect.html and comment out the following
+        // window.history.replaceState({},
+        //     window.document.title,
+        //     window.location.origin);
+        // window.location = "/";
+   - click login from app.
+   - int the STS login page enter credentials a click Login. 
+     you will notice you remain in the same page but blank page
+  - copy the whole url of blank page and paste it in a new file (name it JWTStuff)
+    and start chopping it up to find the ID token and access token:
+    
+  - now go to jwt.io and copy aand paste the value of the Access token
+
+
+=============================================================
+MODULE 3 - AUTHORIZING CALLS TO YOUR BACKEND API USING OAUTH2
+=============================================================
+
+- OAUTH2 terminologies: 
+    - resource owner -  someone who has the ownership of the rights to access some backend resource.
+    - resource server - the resource being protected by OAUTh2-based access such as website, api
+      or even remotely accessibledatastore
+    - client - the client software that will be making calls to the server.. angular
+    - authorization server - synonymous to STS or identity provider
+
+- OAUHT2 Grant types. It represent a flow of how user and client application obtain 
+    access token to use for authorization:
+
+    - Implicit grant type - is the only grant type that matters to Angular because
+      authorization code grant type - reuiqres that the client able to store 
+      a secret... angular can't
+    - resource owner password credetial grant type - designed for app
+      that has trusted relationship with STS  in particular desktop and mobile app
+      that use operating system to authenticate the user and obtain the access 
+      control token instead of the client app mangin that flow itself
+
+    - client credential grant type - this is designed for service to service 
+      communication where there is no user in the loop.
+    
+- OAUTH2 TOKEN TYPES = Access token and Refresh token 
+    JWT - represents a secured session issued by the STS 
+
+    Refresh token is not applicable to Angular app because Angular app 
+    cannot store securely JWT
+
+=====================================================
+-  ADDING AUTHENTICATION TO THE API 
+=====================================================
+    - add appropriate Nuget packages: Identityserver4 
+       Instal-Package Identityserver4.AccessTokenValidation in your API project  
+
+    - Next go to Configuration() in startup.cs of the SecuringAngularApps.Api
+      and hookup the authentication middle ware like this
+             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                 .AddJwtBearer(options =>
+                     {
+                         //base address of your ideentity server
+                         options.Authority = "http://localhost:4242/";
+                         options.RequireHttpsMetadata = false; 
+                         //name of the API resource
+                         options.Audience = "projects-api";
+                     }
+                 );
+    - next go to Configure() method in the startup class and add call app.UseAuthentication
+      to the builder object.
+
+    - now that the infrastructure is in place to look for access Tokens and 
+      validate them when presented, now I just have to indicate which APIs are
+      protected by that authentication. To do that I go to:
+         - each controller in the API project and add the [Authorize] attribute
+
+    - next modify config.cs in the STS project like this:
+	     public static IEnumerable<ApiResource> GetApiResources()
+        {
+            return new List<ApiResource>
+            {
+                new ApiResource("projects-api", "Projects API")
+            };
+        }
+	    
+	- next modify startup.cs in API project like this:
+          //step 2 in seeting up authentication in ASP.NET core api project
+            app.UseAuthentication();
+
+	- next add [Authorize] attribute to all controllers.
+
+  
+  ===============================================================
+  -  ADDING ACCESS TOKENS MANUALLY TO HTTP REQUEST 
+  ===============================================================
+    -  go to angular project and open project-service.ts
+
+         - add import { ....,  HttpHeaders } from '@angular/common/http';
+         - inject authsrvice in the constructor:
+           constructor(private httpClient: HttpClient, private _authService: AuthService) 
+
+	       - modify project.service.ts to manually add jwt token to getProjects like this:
+              getProjects(): Observable<Project[]> {
+              //step3: get access token
+              var accessToken = this._authService.getAccessToken();
+              //step4: create instance of HttpHeaders and set Authorization header to
+              //bearer and provide the accessToken received from getAccessToken
+              var headers = new HttpHeaders().set('Authorization', `Bearer ${accessToken}`);
+
+              //step 4: modify get method like this:
+              return this.httpClient.get<Project[]>(Constants.apiRoot + 'Projects', { headers: headers });
+              //return this.httpClient.get<Project[]>(Constants.apiRoot + 'Projects');
+              }
+		
+      	- adding access token manually is not good. The solution is to create an interceptor that 
+	        will automatically JWT token to the http header of every call. 
+
+   ===============================================================
+    - ADDING ACCESS TOKENS AUTOMATICALLY WITH AN HTTP INTERCEPTOR 
+   ===============================================================
+
+      - CREATING INTERCEPTOR
+          - create auth.interceptor.ts in core folder. the fastest way is to do
+            a- using John Papas extension and select the boiler plate: http-interceptor-HttpHeaders
+            and rename the class to AuthInterceptor to conform with the filename.
+            see comments in auth.interceptor.ts
+
+          - once your interceptor is defined hook it up to the Angular HttpClient infrastructure. 
+            the way you do that is you go to the NGModule (in this case in core.Module)
+
+          - then import your AuthInterceptor in coremodule.ts like this:
+              import { AuthInterceptor } from './auth.interceptor';
+              providers: [ 
+            { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+          - to test click "Manage Projects" and you will see that you will get "All"Projects
+            clicking "My Projects" will also work because we added the interceptor manually here.
+
+   =============================================================
+    - ADDING PERMISSIONS NOW THAT CALLS ARE BEING AUTHENTICATED  
+   =============================================================
+
+        - CLAIMS PRINCIPAL - ALLOWS YOU FILTER THE DATA BASED ON WHO THE CALLER IS AND WHAT THE 
+	        CALLER CAN ACCESS.
+
+	      - there is a security context available to your code in the backend to make 
+		      decisions what methods a caller can access in API. In .net apps whether .NetCore or 
+		      full framework what happens is that a securityty principal is established based on 
+		      the content of the access token.
+
+        - this principal is called "CLAIMS PRINCIPAL" that contain all of the claims that came 
+          in through the access token. To get to it you can use the "user" object available
+          in the controller (e.g. this.User) base class or you can use a static reference 
+              "Claims.Current"
+            
+          Note: See Projects.controller lines 40-43 in Visual Studio
+
+            - enable filtering using claims principal based on roles, we need a relationship in the 
+              datamodel between a userid and a project. 
+
+            - go to UserPermission.cs class that links  a project or a user and it
+              also has a value to specify what level of access that user has to the project.
+
+        - go to GetProjects() in ProjectsController all I need to do is get the value of the name 
+          identifier claim from my claims pricipal, get the list of permissions for the UserID and 
+          then filter the projects to return based onthiose permissions like this:
+
+              var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    //filter the records to return based on user permissions
+                    List<int> userProjectIds = _context.UserPermissions.Where(up =>
+                        up.ProjectId.HasValue && up.UserProfileId == userId).Select(up => up.ProjectId.Value).ToList();
+                    return _context.Projects.Where(p => userProjectIds.Contains(p.Id));
+
+        - add UnAuthorizedComponent in "home" folder and add it 
+          to app.module and app.routing.module
+        - then go auth-inteceptor and modify it as shown
+
+   ==================================================
+		- FILTERING DATA IN THE API BASED ON 
+   ===================================================
+        - The user permission discussed above to filter data are application-specific control
+          mechanism, they link a particular model object for this application, a project, 
+          to a user, and are additionally specifying a level of access to that resource, whether the 
+          user has a View or Edit permission. 
+
+        - to control permissions we can only do it in the backend (meaning in the API)
+
+		    - go to ProjectsController and look at the Updating, Adding, Deleting milestone methods
+          and add an access "Controlled Guard" into these methods and return an appropriate
+          error if the caller is not authorized to access methods. The code to this will 
+          depend on the app, the framework,  and the permission mechanism you are using.
+          in this case, I just have that simple permission object as part of the data model
+          (see UserPermission.cs under the model folder)
+
+		     - now what we  do is to add a helper method to lookup the permission. In this case
+           add the method private async Task<bool> MilestoneAccessCheck(Milestone item) helper 
+           in the ProjectsController
+
+         - then call this helper in: AddMilestone, DeleteMilestone, UpdateMileStone
+
+			   - also add  ProjectEditAccessCheck() helper method to check permissions
+           for project level operations. And then add a call to this helper in
+           the following methods:   PutProject and GetProject methods
+			      
+         - TO TEST  
+              - login as Alice  (she only has View permissions)
+              - click "My Projects" 
+              - click "Improve Ops Efficiency"
+              - click "edit icon" you should get a 403. Do a F12 in Chrome and
+                select "Console" to see error
+
+  ===============================================
+   - HANDLING AUTHORIZATION ERRORS and ADDING
+     ACCESS CONTROL CHECK 
+  ===============================================
+    - add code to the angular client to detect authorization errors being
+      returned to the client and send the users somewhere appropriate in
+      the app if they occur
+	
+		- to do this is to leverage auth.interceptor to look for responses  coming back
+		  from the server in addition to modifying the request as they go out like what we have
+		  done for the authorization header.
+
+		- first add Unauthorized.Component in the home folder
+        - add unauthorized.component.html
+        - add import statement in the app.module.ts
+        - go to app-routing.module and add a route to get it
+            { path: 'unauthorized', component: UnauthorizedComponent}
+
+    -  i want to trigger this route automatically if an error
+       is returned from an http call. So I'll go to auth.interceptor
+       and modify it.
+
+          - add this import in auth.interceptor: 
+              import 'xjs/add/operator/do'
+          - add Router in the constructor
+
+          return next.handle(authReq).do(() => {}, error => { 
+            var respError = error as HttpErrorResponse;
+            if (respError && (respError.status === 401 || respError.status === 403)) {
+            this._router.navigate(['/unauthorized']);
+            }
+          });
+
+           - TO TEST  
+              - login as Alice  (she only has View permissions)
+              - click "My Projects" 
+              - click "Improve Ops Efficiency"
+              - click "edit icon" you should be redirected to unauthorizedcomponent.html
+                 
+   =============================================
+      - HANDLING AUTHORIZATION ERRORS
+   =============================================
+	 - another thing you might want to base authorization decisions on is a "role" claim 
+	   or other custom claim. Each Identity provider will be a little different on how you 
+	   can add custom claim into the access tokens that are issued by the STS.
+
+	 - I modified IdentityServer4 code to add a "role" claim of "admin" if the admin user is logged 
+	   in. 
+         - go to CustomProfileService.cs in the STS project under the "Quickstart/Account" Folder and 
+		   add this code to GetProfileDataAsync()
+
+		       if (user.Email == "admin@globomantics.com")
+              {
+                claims.Add(new Claim(JwtClaimTypes.Role, "Admin"));
+              }
+
+        - then go to  public IActionResult GetProjectUsers([FromRoute] int id) and 
+		  add [authorize(Roles="Admin")]
+
+		- do the same for PostProject and DeleteProject
+
+		- do the same for the UserPermission.Controller and AccountController classes at the controller level:
+		    [Authorize(Roles = "Admin")]
+
+        TO TEST:
+		       LOGIN AS ADMIN:
+             - click Manage Projects
+             - you should see all projects
+
+           LOGIN AS ALICE:
+             - click Manage Projects
+             - click "Improve Ops Efficiency"
+             - click "Delete" - you should be redirected to error page
+====================================================================================
+            MODULE 5 - ENAHANCING THE USER EXPERIENCE:
+====================================================================================
+	
+	1. SILENT RENWAL OF ACCESS TOKENS:
+		- access token expires
+		- we need a way to logically refresh am authorization token, but we can't use
+      the "refresh tokens" of OAUTH because they can't be used securely from an 
+      "implicit flow" app such as in Angular.  
+
+		- So what can we do? Here's the thing. When you log in to an identity provider 
+		  with Implicit Flow: 
+		    1. you are just doing a form POST of the login form (just like using forms 
+			   authentication for a single website)
+		  	2. As a result the identity provider will typically establish a:
+			    - cookie-based secure session between the browser and the 
+				    identity provider site itself.
+
+				- that means any time a request is sent from the browser to the identity  
+				  provider site, the browser will send the "AUTHENTICATION" session cookie
+				  along with the request. This includes a request to obtain a NEW OAUTh2 
+				  "AUTHORIZATION" token. So if the expiration of the login session with the 
+				  identity provider is longer than the expiration of the AUTHORIZATION  
+				  token, the identity provider can support issuing a new AUTHORIZATION
+				  token as long as:
+				    - the session with the STS is still active.
+
+			  		- this allows you to get the same effect as a sliding expiration 
+					    of the authorization token. (although this is not part of the protocol
+					    sounds like hacking the protocol)
+
+            ==========================================================================
+              REASONS WHY MANY SYSTEMS ARE MOVING WAY FROM Cookie-based Authentication
+            ==========================================================================
+                - moving away not because of inherent weakness or vulnerability in
+                  the approach. It is due to a number of factors. cookie-based authentication: 
+                     1. Requires server side processing and rendering that may not be
+                        otherwise part of your architecture if you are building a front-end   
+                        web app, or a SPA, mobile app or desktop app.
+                     
+                     2. Cookies are only sent to the same site they were issued from. In other
+                        words it only works for a single site... so it does not support
+                        single sign-on (SSO) model. 
+
+                      3. And it requires attention to protect against CSRF and XSS.
+                   
+         - but for single site access, cookies work great and are secure. they also
+                  support a sliding expiration in ways tokens generally cannot. And for 
+                  implicit flow client applcations, if the session with the STS is alive it means
+                  the user is still running the browser... because the user could be working
+                  in another tab or navigated to a different site, but there is a direct tie 
+                  to an interactive user session. With tokens there's not, because remember
+                  that OAUTH tokens can be used with non-interactive background server to server
+                  communications as well. 
+
+
+         - session cookies are also issued from the server as HTTP-only cookies.
+
+                    This makes it harder for a hacker to hijack that cookie than 
+                    it is for them to hijack an OAUTH token. So it is reasonable and safe to allow 
+                    cookie-based sessions to have longer expirations than OAuth tokens.
+                    
+         - So what  we can do is to leverage that fact is to set up some code
+           that will go back to our STS periodically and get a new authorization token
+           as long as our cookie-based  session with the STS is still active.
+
+            1. this is done is to use a hidden IFrame in you app to issue request to the  
+               authorization endpoint of your STS. That request should include a parameter 
+               that's part of the OpenID connect protocol named "prompt" and set to false.
+               That tells the STS to try authenticate the user without prompting or trying 
+               to show any kind of UI, which it can succeed doing if the session cookie with the 
+               STS is still. 
+
+            2 if that call succeeds, the STS will return a new "authorization token", just 
+              it did when the user first logged in.
+
+            3 then you just throw away the old token and use the new one for subsequent requests
+              to your API.
+
+				- it sounds like very complicated to implement... and it is. The good news is 
+				  is you don't have to, oidc-client has already done so for you. 
+
+				- with OIDC-Client all you have to do is to tell it you want to enable a silent renew 
+				  and it will keep an eye on the expiration of the tokens it has obtain for you 
+				  and it will create the hidden iFrame for you and issue the authorization request, 
+				  and if that succeeds it will replace your existing access token inside a 
+				  user instance once it gets the new one. So let's look how this is done in a demo.
+
+	2. ENABLING SILENT RENEWAL DEMO	(use m3-before-i-completed API project as starting point )
+       	
+       - go to config.cs of SecuringAngularApps.STS	and add the following code:
+           IdentityTokenLifetime=30,
+           AccessTokenLifetime=30
+
+       - login. it should time out after 30 seconds and "Login" will be displayed again.
+
+       - go to auth.service and add the following:
+              automaticSilentRenew: true,
+              silent_redirect_uri: `${Constants.clientRoot}assets/silent-redirect.html`
+     
+        - create in assets folder: silent-redirect.html
+        - add Log.logger = console; in the constructor of auth.service
+       
+            TODO: HOW TO MAKE THE SOURCE FILES IN CHROME DEV TOOLS
+
+        - then to config.cs and add the following code
+              RedirectUris =           { "http://localhost:4200/assets/oidc-login-redirect.html",
+                                              "http://localhost:4200/assets/silent-redirect.html" },
+
+   ==========================================
+   3. Providing a User Security context
+        CHANGES TO THE API AND STS PROJECTS
+          - create AuthContext.cs in the Model folder of the API
+          - create SimpleClaim.cs in the Model folder of the API
+          - now go to AccountController and add/do the following: 
+                [HttpGet("AuthContext")]
+                [Authorize()]
+                public IActionResult GetAuthContext()
+                {
+                    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var profile = _context.UserProfiles.Include("UserPermissions").FirstOrDefault(u => u.Id == userId);
+                    if (profile == null) return NotFound();
+                    var context = new AuthContext { UserProfile = profile, Claims = User.Claims.Select(c => new SimpleClaim { Type = c.Type, Value = c.Value }).ToList() };
+                    return Ok(context);
+                }
+
+            - uncomment the Admin role from the controller lvel like this:
+                  // [Authorize(Roles = "Admin")]
+              and move it to the GetAllUser() method like this: 
+                    [HttpGet("Users")]
+                  [Authorize(Roles = "Admin")]
+                  public IActionResult GetAllUsers()
+
+          CHANGES TO THE ANGULAR PROJECT
+             - create Auth-Context.ts in the model folder
+             - create Simple-Claim.ts in the model folder to match the server side simpleclaim.cs
+
+             - then go to auth.service and add the following method: 
+                 loadSecurityContext()
+             - call loadSecurityContext in the call to this._userManager.getUser()
+             - add Utils.ts in "Core" folder
+
+           TO TEST:
+              
+   ==========================================
+   4. ADD CUSTOMIZING UI BASED ON THE ABOVE 
+      CONTEXT (Hide, show, or disable)
+     
+      - app.component.html and apply the following changes:
+             <button *ngIf="isLoggedIn()" mat-button routerLink="/projects">My Projects</button>
+            <button *ngIf="isAdmin()" mat-button routerLink="/admin">Manage Projects</button>
+      - go to app.component.ts and add this function:
+           isAdmin() 
+      
+      TO TEST:
+         - LOGIN AS ADMIN YOU SHOULD SEE "My Projects" and "Manage Projects".
+         - LOGIN AS ALICE YOU SHOULD SEE "My Projects" only.
+
+      ADDING SECURITY STUFF FOR MILESTONE FOR A PROJECT
+         - click "Milestone" if user doesn't have access to this item the 
+           Edit, Delete, and Add buttons should be disabled:
+
+         - edit the Project.component.ts under "projects" folder
+             - import and inject { AuthService } from '../core/auth.service';
+             -  add method "CanEditProject"
+         - edit the Project.component.html under "projects" folder
+           (see changes to the edit, delete buttons)
+
+         TO TEST:
+            Login as Alice
+            - click "my  projects"
+            - click "Improve Efficiency"
+            - edit and delete buttons should be disabled
+            - hover over the diabled buttons. A tooltip should pop up
+
+            Now login as admin. 
+            - click my projects
+            - click "Improve Efficiency"
+            - you will be redirected error page.
+
+         - to fix this admin error:
+            - go to ProjectsController.ts in the API project
+            - add the followwing code to MilestoneAccessCheck() and ProjectEditAccessCheck()
+               if (User.IsInRole("Admin")) return true;
+          
+ ==========================================
+   5. BLOCK NAVIGATION TO UNAUTHORIZED USERS
+      - if a user puts the url in the address bar, the user can still navigate
+        to it even if he/she is not authorized. 
+
+      - to fix add a route guard named admin-route-guard under folder "core"
+          - add the admin-route-guard to core.module.ts
+
+      - then go to Admin.module.ts and
+          import  { CoreModule } from '../core/core.module';
+      - go to admin-routing.module and 
+            "canActivate" to 
+             { path: 'admin', component: ManageProjectsComponent, canActivate: [AdminRouteGuard]},
+===========================================================
+INSTALLING FONT-AWESOME
+
+  - npm install bootstrap font-awesome
+  - then import the styles in styles.css 
+     @import "~bootstrap/dist/css/bootstrap.min.css";
+     @import "~font-awesome/css/font-awesome.min.css";

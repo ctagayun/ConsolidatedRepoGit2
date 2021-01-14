@@ -1,0 +1,289 @@
+=========================================================
+ANGULAR HTTP COMMUNICATION - brice wilson 5 Feb 2019 - 2 HRS
+=========================================================
+Intro:
+   - Angular 4.3 released in July of 2017
+   - HttpclientModule replaced HTTP
+   - Angular 5 released in Nov. 2017 older HTTPClientModule have been deprecated
+   - this course will focus on the original HttpClient API released in version 4.3
+
+MODULE 2 - CONFIGURING AN APPLICATION TO MAKE HTTP REQUEST
+
+   - Angular is dependent on Rxjs. RxJs is a separate javascript library that will 
+     enable you to build client-server applications.
+   - rxjs is installed in applications created using CLI
+
+MODULE 3 - CONSUMING REST SERVICES
+   - see detailed comments After-Consuming-Rest
+ 
+
+    1. READING A COLLECTION OF BOOKS
+         - modify data.services in core folder LIKE THIS
+         - to see options in a "get" or other http verbs, position cursor inside "get" and press f12
+
+               getAllBooks(): Observable<Book[]> {
+                  console.log('Getting all books from the server.');
+                  // the observable returns a Book array
+                  // '/api/books' is the url of the API
+
+                  // the GET request interprets the body as JSON
+                  // and returns it. this means the GET method expects
+                  // the data coming from the GET request as JSON
+                  // and will automatically maps it in the array of books
+                  // specified by the <T> parameter of the method in this
+                  // case <Book[]>
+
+                  // the return type of .get is an observable of <T>
+                  return this.http.get<Book[]>('/api/books');
+               }
+
+         - go to Dashboard.Component to see how to Subscribe to  this.http.get<Book[]>('/api/books');
+         see comments  on ngOnInit()
+      
+                  // to receive the data returned by the observable,
+                  // we need to subscribe to the observable returned
+                  // by the function getAllBooks.
+
+                  // Observables has a method called "Subscribe"
+                  // so we can chain to the function call
+                  // by doing .subscribe
+                  // "subscribe" calls 3 callback fucntions as
+                  // parameters: data, err, and completion denoted by "()"
+                  ngOnInit() {
+                     this.dataService.getAllBooks()
+                        .subscribe(
+                        (data: Book[]) => this.allBooks = data, // the first function pass  is the  data from the server as a parameter
+                                                                  // it will be the array of books and assign
+                                                                  // it to the "allBooks" property defined above
+                        (err: any) => console.log(err),  // the second function returned is any "errors" that occured
+
+                        () => console.log('All done getting books.') // the 3rd function handler pass is the "completion" handler
+                        );
+
+         - populate the view with data stored in "allBooks" property:
+                  <li *ngFor='let book of allBooks'>
+                     <i>{{book.title}}</i>
+                     <a [routerLink]="['/editbook', book.bookID]">Edit</a>
+                     <a (click)="deleteBook(book.bookID)">Delete</a>
+                  </li>
+            
+         - to see the API call in Chrome.. do F12, click "Network", and click refresh
+            you should see books/api, Status = 200 etc...
+
+            click books/api you see the headers content on the right panel.
+            click "preview" to see array of books in json format
+            click "response" to see array of books in "raw" format
+
+    2. READING A SINGLE BOOK
+        - modify data.services in core folder LIKE THIS:
+        
+            getBookById(id: number): Observable<Book> {
+
+               // first parameter is the uri + id
+               // 2nd parameter is the http header stuff
+               return this.http.get<Book>(`/api/books/${id}`, {
+                  headers: new HttpHeaders({
+                  'Accept': 'application/json',
+                  'Authorization': 'my-token'
+                  })
+               });
+            }
+        - a single book. this is called from edit.component.ts
+
+    3. USING RXJS OPERATOR
+         - rxjs eperators allows you to transform your data in the
+           shape you need. For example you might just need First and last name and
+           address and ignore the rest of the data coming in like age and gender
+         
+         EXAMPLE:
+               // Using rxjs operators
+               // shapes the data before returning the observable
+               // we need to import:
+               // import { map, tap } from 'rxjs/operators';
+               // first use chain the ".pipe'able" operator
+               // and pass a comma separated list of  operators
+               // to apply to the object coming from the server.
+               // "map" is one operator - you pass it a  function that will accept
+               //    the "type" currently wrapped in the observable and returned
+               //    the data transformed in some way (in this case we use an arrow function)
+               //  Example:
+               //      map(b => <OldBook>{
+               //        bookTitle: b.title,
+               //        year: b.publicationYear
+               //      }),
+               //   the "b" is the book returned from the server
+               // "tap" is another operator
+
+            getOldBookById(id: number): Observable<OldBook> {
+               return this.http.get<Book>(`/api/books/${id}`)
+                  .pipe(
+                  // the "b" is the book returned from the server and we will map "b" to OldBook instance
+                  map(b => <OldBook>{
+                     bookTitle: b.title,
+                     year: b.publicationYear
+                  }),
+                  // tap doesn't transform data but gives you a way to execute a bit of code
+                  // before the final data shaped observable is returned
+                  tap(classicBook => console.log(classicBook))
+                  );
+             }
+         - AFTER modifying the dataservice go to edit-book.component.ts and add 
+           call to dataService.getOldBookById
+
+         - TO TEST:
+              - CLICK THE "EDIT" LINK BESIDES NEXT TO THE BOOK (gOODNIGHT MOON)
+              - HIT F12 IN CHROME AND GO TO CONSOLE YOU SHOULD SEE transformed data
+                  {booktitle: "Goodnight Moon", year: "1956}
+
+     4. CREATE, DELETE, UPDATE DATA    
+
+        - GO TO dataService.ts AND THE following methods:
+               // POST - the newly created record is added to the response header
+               addBook(newBook: Book): Observable<Book> {
+                  return this.http.post<Book>('/api/books', newBook, {
+                     headers: new HttpHeaders({
+                     'Content-Type': 'application/json'
+                     })
+                  });
+               }
+
+               // PUT
+               updateBook(updatedBook: Book): Observable<void> {
+                  return this.http.put<void>(`/api/books/${updatedBook.bookID}`, updatedBook, {
+                     headers: new HttpHeaders({
+                     'Content-Type': 'application/json'
+                     })
+                  });
+               }
+
+               // DELETE
+               deleteBook(bookID: number): Observable<void> {
+                  return this.http.delete<void>(`/api/books/${bookID}`);
+               }
+         -  GO TO DASHBOARD.COMPONENT.TS 
+
+MODULE 4 - ADVANCE HTTP REQUESTS AND ERROR HANDLING
+    -  HANDLING HTTP errors
+        - see dataservice.ts
+        - use catchError
+            import { map, tap, catchError } from 'rxjs/operators';
+
+            getAllBooks(): Observable<Book[] | BookTrackerError> {
+            console.log('Getting all books from the server.');
+            return this.http.get<Book[]>('/api/books')
+               .pipe(
+               catchError(err => this.handleHttpError(err))
+               );
+         }
+    - RETRIEVING DATA WITH RESOLVERS
+        - resolvers - gets te data first before routing to a new page
+        - create books-resolver.service.ts in "core" folder
+
+        - import the following in the router module
+           -   import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+               import { Observable } from 'rxjs/Observable';
+               import { catchError } from 'rxjs/operators';
+               import { of } from 'rxjs/observable/of';
+
+         - note there is no "subscribe" in the resolve()because angular will automatically do that.
+              resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Book[] | BookTrackerError> {
+                     return this.dataService.getAllBooks()
+                        .pipe(
+                        catchError(err => of(err))
+                        );
+                  }
+        - the idea is the "resolve" method will be executed by routes that uses this resolver
+
+        - we need to wire this resolver into our "Router" Configuration
+            - go to app-routing.module.ts
+            - // here we are just wiring "DashboardComponent" path to the resolver
+              { path: 'dashboard', component: DashboardComponent, resolve: { resolvedBooks: BooksResolverService } },
+
+        - now in this demo, the DashBoardComponent is the only one using the resolver:
+           - open the Dashboard.Component and modify it like this
+              - need to import import { ActivatedRoute } from '@angular/router';
+
+MODULE 5 - CREATING INTERCEPTORS
+   - interceptors can be used to manipulate http requests such as adding headers to all requests.
+   - can be used for logging, reporting progress events, client-side caching
+   - demo: create add-header.interceptor.ts under core folder.
+       - import HTTPInterceptor
+       - place cursor inside HTTPInterceptor interface and press "Alt + F12" to see defininition
+
+   CREATE AN INTERCEPTOR TO MANIPULATE THE HEADER
+   - see comments in add-header.interceptor.ts
+   - add add-header.interceptor.ts in core.module.ts
+   - add the following in core.module.ts:
+         -import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+         -  { provide: HTTP_INTERCEPTORS, useClass: AddHeaderInterceptor, multi: true }
+
+   - to test start the application... go to "Console" fo Chrome dev tools. you see the following:
+         -   add-header.interceptor.ts:15 AddHeaderInterceptor - /api/books
+         -   LogResponseInterceptor - /api/books
+
+         - go to "Network" tab to see if the header was set to application/json
+           click "books/api" an then click "headers" tab in dialog/window on the right (or bottom) 
+
+   CREATE AN INTERCEPTOR TO MANIPULATE THE RESPONSE  
+      - CREATE log-response.interceptor.ts under "core" folder
+      - must import "HttpEventType"
+          import {... HttpEventType } from '@angular/common/http';
+          import { tap } from 'rxjs/operators';
+
+      - see comments
+            // "next" is a property of type "HttpEventType"
+            return next.handle(req)
+               .pipe(
+               tap(event => {
+                  if(event.type === HttpEventType.Response) { // check if the event is a "response"
+                     console.log(event.body); //log the body of the response
+                  }
+               })
+               );
+
+MODULE 6 CACHING HTTP REQUESTS
+    - first create caching service httpcache.service.ts in "core" folder using CLI
+          ng generate service services/HttpCache --spec false --dry-run
+          (see comments)
+
+    - second create an interceptor in core folder called "cache.interceptor.ts
+         import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
+         import tap and of from rxjs 
+         import { HttpCacheService } from 'app/core/http-cache.service';
+        
+         see comments
+    - then add the CacheIntercepto class to the core.module
+         - import { CacheInterceptor } from './cache.interceptor';
+         - add this { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
+           to the providers array.
+
+    - TO TEST
+         - RUN/REFRESH THE APPLICATION
+         - GO TO NETWORK tab AND CLEAR THE ENTRIES BY CLICKING STOP SIGN
+         - CLICK THE "ADD bOOK" JUST TO NAVIGATE AWAY FROM THE DASHBOARD
+         - THEN CLICK THE BOOKTRACKER LINK TO LOAD ALL THE BOOKS AGAIN
+            NOTE THAT THERE IS NO NEW REQUEST IN THE DEVELOPER TOOL
+
+            GO TO CONSOLE TAB AND YOU SHOULD SEE: 
+               "Returning a cached response: http://localhost:3000/api/books"
+       TO TEST INVALIDATING THE CACHE:
+          - DO A POST, DELETE OR PUT 
+          - CLEAR THE CONSOLE TAB 
+          - ADD A BOOK
+          - YOU SHOULD SEE THE MESSAGE:
+             "Invalidating cache: POST /api/books
+             bookID: 8, title: "Test Book", author: "Claudia Sharp", publicationYear: "1968"} 
+
+MODULE 7 - TESTING HTTP REQUESTS
+
+  
+
+ 
+ 
+
+
+
+
+
+

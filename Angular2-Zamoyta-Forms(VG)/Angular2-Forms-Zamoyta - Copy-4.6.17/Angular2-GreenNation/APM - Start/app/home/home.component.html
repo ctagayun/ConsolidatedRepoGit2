@@ -1,0 +1,155 @@
+<!-- #form is a reference variable will cause Angular to add ngForm Directive
+    So in effect #form is an instance of the ngForm directive
+    - to make angular aware of the existence of an input field add "ngModel""
+      which is part of FormsModule
+    - if we use nfModel make sure that the field has a name attribute
+    - "required" is a valid html keyword. If you don't prescribe novalidate
+       browser validation will fire. We dont want this so turn off browser
+       validation by adding the atribute "novalidate" to the form tag
+    
+    -  binding using banana in a box:
+          name="firstName" [ngModel]=model.firstName 
+     - binding using ngModelChange 
+          name="firstName" [ngModel]=model.firstName  (ngModelChange)="model.firstName=$event">
+    -  Calling a method instead of binding.
+         <input type="text" class="form-control" required placeholder="First Name" name="firstName" [ngModel]=model.firstName
+              (ngModelChange)="firstNameToUpperCase($event)" $event is the value of the event
+
+    -  displaying className attached to a field:
+       - add #firstName to the input field - #firstName template variable accesses the <input> tag itself
+         Ex.   <input #firstName type="text" class="form-control" required placeholder="First Name" name="firstName" [(ngModel)]="model.firstName">
+      -  displaying properties instead of className attached to a field:
+         - simply assign ngModel to template variable #firstName like this:
+            - #firstName="ngModel"
+         - this approach is better because we can use the properties in our logic. the properties are:
+            - pristine - dirty (equivalwnt class  is ngPristine, ngDirty)
+            - valid - invalid (equivalent angular class name is ngValid, ngInvalid)
+            - touched - untouched (equivalent class name is ngTouched, ngUntouched)
+
+     - Styling controls for errors:   
+           
+         - add has-error conditionally like this: 
+             <div class="form-group" [class.has-error]="firstName.invalid &&  firstName.touched">       
+         - add class control-label like this: <label class="control-label"> First Name </label>
+
+     - HTML5 attributes for Validation
+
+     - Validating a Select control
+         - create a custom flag hasPrimaryLanguageError in home.component.ts 
+           and use it like this: <div class="form-group" [class.has-error]="hasPrimaryLanguageError"> 
+         - to make it work attach the a custom validator to (blur) and (change) events like this:
+              (blur)="validatePrimaryLanguage(primaryLanguage.value)"
+               (change)="validatePrimaryLanguage(primaryLanguage.value)" 
+            we need to include "change" event in addition to "blur" otherwise the
+            the select field will stay red even if a language has been selected from
+            the dropdown
+               
+         - #primaryLanguage is a reference variable used to store the value of the field
+
+     - Form level validation:
+         - create a form template variable like this: <form #form="ngForm">
+         - disable submit button
+
+    - Form Posting using HTTP - (submit)= "submitForm(form)
+         - create form-poster.service and import into  app.module.ts and add under @ngMdule providers:
+           like this:
+              providers: [FormPoster],
+         - add submit property at the form level like this:
+              <form #form="ngForm" (submit)= "submitForm(form)" novalidate>
+              Note: #form is a template variable. pass it as parameter without the #sign
+
+    - Form Posting using HTTP - Handling Form's Submit Event
+
+     
+     - Third Party Controls:
+         - - go to www.angular.io/resources  > ng2-bootstrap
+         - go to valor-software.com/ng2-bootstrap/#
+         - npm install ngx-bootstarp dash dash save
+
+
+ -->
+
+<div class="container">
+    <h3>Employee Form</h3>
+
+    <form #form="ngForm" (submit)="submitForm(form)" novalidate>
+        <div class="form-group" [class.has-error]="firstName.invalid &&  firstName.touched">
+            <label class="control-label"> First Name </label>
+            <input #firstName="ngModel" type="text" class="form-control" minlength="3" pattern="...+" required placeholder="First Name"
+                name="firstName" [(ngModel)]="model.firstName">
+            <div *ngIf="firstName.invalid &&  firstName.touched" class="alert alert-danger">
+                First Name is required and must be at least 3 characters.
+            </div>
+
+            <!--<input #firstName type="text" class="form-control" required placeholder="First Name" name="firstName" 
+              [(ngModel)]="model.firstName">-->
+            <!--<input type="text" class="form-control" required placeholder="First Name" name="firstName" [ngModel]=model.firstName
+              (ngModelChange)="model.firstName=$event">-->
+            <!--<input type="text" class="form-control" required placeholder="First Name" name="firstName" [ngModel]=model.firstName
+              (ngModelChange)="firstNameToUpperCase($event)">-->
+
+            <!--<h3> Classes Attached to firstName</h3>-->
+            <!--<h4> {{firstName.className}} </h4>-->
+
+            
+            <h3> Properties attached to firstName </h3>
+            <h4> firstName.Invalid = {{firstName.invalid}} firstName.Pristine = {{firstName.pristine}} firstName.Dirty = {{firstName.dirty}}
+                firstName.Untouched = {{firstName.untouched}} firstName.Touched = {{firstName.touched}} </h4>
+                
+        </div>
+
+        <div class="form-group">
+            <label> Last Name </label>
+            <input type="text" #lastName="ngModel" class="form-control" required placeholder="Last Name" 
+               name="lastName" [(ngModel)]=model.lastName>
+            <div *ngIf="lastName.invalid &&  lastName.touched" class="alert alert-danger">
+                Last Name is required.
+            </div>
+        </div>
+
+        <div class="checkbox">
+            <label>  <input type="checkbox" name="name-is-fulltime" [(ngModel)]="model.isFullTime"> Fulltime Employee </label>
+        </div> 
+
+
+        <label> Payment Type </label>
+        <div class="radio">
+            <label>  <input type="radio" name="pay-type" value="w2" checked  [(ngModel)]="model.paymentType"> W2 </label>
+        </div>
+        <div class="radio">
+            <label>  <input type="radio" name="pay-type" value="1099" [(ngModel)]="model.paymentType" > 1099 </label>
+        </div>
+
+
+        <!-- "languages" is defined in HomeComponent.ts -->
+
+        <div class="form-group" [class.has-error]="hasPrimaryLanguageError">
+            <label class="control-label"> Primary Languages </label>
+            <select class="form-control" name="primaryLanguage" #primaryLanguage [(ngModel)]="model.primaryLanguage" (blur)="validatePrimaryLanguage(primaryLanguage.value)"
+                (change)="validatePrimaryLanguage(primaryLanguage.value)">
+              <option value=default>Select a Language</option>
+              <option *ngFor="let lang of languages">
+                  {{lang}}
+              </option>
+           </select>
+        </div>
+
+
+        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Ok</button>
+
+    </form>
+
+
+    <div>
+
+        <h3> IsformPristine = {{form.pristine}} </h3>
+        <h3> IsFormValid = {{form.valid}}</h3>
+
+        Model: {{model | json}}
+        <br> Angular: {{form.value | json}}
+
+
+
+    </div>
+
+</div>

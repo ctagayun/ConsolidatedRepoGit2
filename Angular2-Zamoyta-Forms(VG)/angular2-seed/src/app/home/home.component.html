@@ -1,0 +1,26 @@
+<!-- #form is a reference variable will cause Angular to add ngForm Directive
+    So in effect #form is an instance of the ngForm directive
+    - to make angular aware of the existence of an input field add "ngModel""
+      which is part of FormsModule
+    - if we use nfModel make sure that the field has a name attribute
+    - "required" is a valid html keyword. If you don't prescribe novalidate
+       browser validation will fire. We dont want this so turn off browser
+       validation by adding the atribute "novalidate" to the form tag
+ -->
+
+<div class="container">
+    <h3>Angular 2 Forms</h3>
+
+    <form #form="ngForm" novalidate>
+        <div class="form-group"> 
+            <label> First Name </label>
+          <input type="text" class="form-control" required placeholder="Name" name="firstName" ngModel>
+        </div>
+        <button class="btn btn-primary" type="submit">Ok</button>
+
+    </form>
+    <div>
+        <p> form.Pristine = {{form.pristine}} </p>
+    </div>
+
+</div>

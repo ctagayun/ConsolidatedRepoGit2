@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="app/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="app/css/bootstrap-theme.min.css" rel="stylesheet" />
+</head>
+<body ng-app="app">
+
+<h1>Book Logger</h1>
+
+<!--use ng-directive to inform angular that this is where the html template will be loaded.
+this will be the container for the html that will be loaded with each route-->
+<div ng-view></div>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-route.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-cookies.js"></script>
+<script src="app/app.js"></script>
+<script src="app/books/BooksController.js"></script>
+<script src="app/books/AddBookController.js"></script>
+<script src="app/books/EditBookController.js"></script>
+<script src="app/services/dataService.js"></script>
+<script src="app/services/loggerService.js"></script>
+<script src="app/services/constantService.js"></script>
+<script src="app/services/badgeService.js"></script>
+</body>
+</html>

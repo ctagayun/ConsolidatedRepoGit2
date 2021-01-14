@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <title>Acme Product Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="app/app.component.css" rel="stylesheet" />
+
+    <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+
+    <!-- Configure SystemJS Section. This how the module loader will find our root component 
+         application. Importing an ES module from a folder named "app"
+     -->
+    <script src="systemjs.config.js"></script>  <!--Configuring system.js.config.js as our module loader -->
+     <!-- The following script tells the module loader to import an ES module from a folder named app -->
+    <script>
+      System.import('app').catch(function(err){ console.error(err); });
+    </script>
+</head>
+
+<body>
+    <!--Comes from the selector property of the component. the property name is pm-app 
+    It is  basically a directive. A DIRECTIVE in angular is a custom HTML element-->
+    <pm-app></pm-app>
+    Starter files for the course
+
+    <!--Detailed Notes in Starting an angular apps
+    1. Setup Indext.html to host the application by specifying the selector (found  in the metadata def of the component)
+        as a directive in the body tag.
+    2. But how does the module loader find our root application component? Answer:
+        (1) configure systemjs.config.js our module loader in the index.html
+             (see Configure SystemJS Section above) and tells the module loader to import modules from the "app" folder
+        (2) angular looks at the systemjs.config.js under the packages section and determines
+            that the first module to load is main.js located in app folder
+        (3) inside main.js are import statements for additional modules to import
+            
+    
+     -->
+</body>
+
+</html>

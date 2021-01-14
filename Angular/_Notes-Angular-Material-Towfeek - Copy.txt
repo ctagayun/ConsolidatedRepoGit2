@@ -1,0 +1,395 @@
+=========================================================
+Angular Material by Towfeek
+=========================================================
+- install CDK and Material
+     npm install --save @angular/material @angular/cdk
+     npm uninstall --save @angular/material @angular/cdk
+
+- install angular animations module: 
+        npm install --save @angular/animations
+         npm uninstall --save @angular/animations
+- create a material module calles "material" - and put it in a folder "shared"
+    - ng g m shared\material --flat --dry-run
+
+
+============================================ 
+ MODULE 2 - INTRODUCTION
+===========================================
+   Material Design Specification
+     - https://material.io/guidelines/
+
+   Angular Material
+     - https://material.angular.io/ 
+
+     - https://github.com/angular/material2 
+
+    GitHub - https://github.com/ajtowf/angularmaterial
+    
+    YouTube 
+      - https://www.youtube.com/c/AjdenTowfeek
+
+    Twitter
+
+      - https://twitter.com/ajtowf
+ 
+============================================ 
+ MODULE 3 - MATERIAL DESIGN
+============================================
+  key principles:
+    - angular material is a design language
+    - material is the metaphor
+    - bold, graphic and intentional
+    - motions provides meaning
+
+
+============================================ 
+ MODULE 4 - GETTING STARTED
+=============================================
+  - setting up the environment
+     - install vs code from code.visualstudio.com/download
+     - install node.js - can leverage NPM for the installation
+         get from nodesjs.org/en
+     - install typeScript
+         - go to  typescriptlang.org
+         - click download tab
+         - the command-line TypeScript compiler can be installed as 
+           a node.js package
+             - npm install -g typescript
+               
+            example how to use: tsc helloworld.ts   
+
+         - to be current to the latest version:
+               - open command prompt
+               - do tsc --version to check your typescript version
+               - npm install -g typeScript@3.1.2
+          
+     - set up Angular CLI first
+               check version by:
+                 ng --version
+               npm uninstall -g @angular/cli
+               npm cache clean
+
+               npm install -g @angular/cli
+               npm install @angular/cli
+               ng update @angular/cli 
+               npm install
+
+               install yarn also because of dependency to @angular/cli
+               npm install -g yarn
+         NOTE: do the when converting to Angular 6.0
+               npm install rxjs-compat --save
+               
+     - install angular material  
+        npm install --save @angular/material @angular/cdk
+ 
+     - install animation support
+        npm install --save @angular/animations
+
+     - open app.module.ts and import: 
+           BrowserAnimationsModule,
+
+     - create Material.module.ts under "shared" folder
+          open app.module.ts and import: MaterialModule
+
+     CREATING OUR FIRST MATERIAL COMPONENT
+       - the best way to learn angular material is to 
+         go to material.angular.io and study the documentation
+       - click components tab... click "forms control", 
+         "Navigation" button etc... 
+       
+       - select and cut and paste sample templates you want to use
+         for example click button if you want it. then click "<>" to 
+         view the button source code
+ 
+       - open app.component.html and paste the button code
+       - put a theme open style.css
+         - node-Module-@angular->material->pre-built-themes
+           select "indigo-pink" 
+         - import: @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+       - Now include "Gesture" support by loading hammer.js
+           - npm install --save hammerjs
+           - open main.ts
+                import 'hammerjs';
+
+       - Now add Material icons
+           - we need to load the icon fonts
+           - open index.html
+               - add <base href="/">
+               - and add this link:   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+           - open app.component.html and add 
+                 <mat-icon>face</mat-icon>
+           - open material module under shared folder and add  MatIconModule
+            better still import and export all material modules
+
+============================================ 
+ MODULE 5 - LAYOUT COMPONENT
+============================================
+   Convert to Angular 6.0
+      check version by:
+               ng --version
+
+               //update global package
+               npm uninstall -g @angular/cli
+               npm cache clean --force
+               npm install -g @angular/cli@latest
+
+               //update local version
+               delete old node_modules
+               npm install @angular/cli
+               npm install
+               ng update @angular/cli 
+
+               install yarn also because of dependency to @angular/cli
+                 npm install -g yarn
+
+         NOTE: do the when converting to Angular 6.0
+               npm install rxjs-compat --save
+
+         - install angular material  
+            npm install --save @angular/material @angular/cdk
+ 
+        - install animation support
+           npm install --save @angular/animations
+
+         - Now include "Gesture" support by loading hammer.js
+            - npm install --save hammerjs
+         - open main.ts
+                import 'hammerjs';
+
+     - we will use a UI using FLEXBOX
+
+     - Flexbox Basics      
+         -  Angular flex layout provides an API using Flexbox css
+            and media query
+
+     - create demo.module.ts  in a folder called "demo"
+     - create demo-routing.module.ts under "demo" folder
+
+     - create button.component under "demo" folder
+     
+     - move the following from app.component.html to buttons.component.ts:
+        !-- <button mat-button>
+          <mat-icon>face</mat-icon>
+           Click me!
+            </button>
+          <mat-checkbox>Check me!</mat-checkbox> 
+         -->
+         replaced it with <router-outlet></router-outlet>        
+ 
+     - add the following imports to demo.module.ts
+          import { DemoRoutingModule } from './demo-routing.module';
+          import { ButtonsComponent } from './buttons/buttons.component';
+          import { FlexboxComponent } from './flexbox/flexbox.component';
+
+     ================================================
+     SETTING UP THE ROUTE for buttons.component:
+     ================================================
+        - let us create a "Route" in app.module.ts
+
+        - open app.module.ts  and add the following:
+
+           - let's create the route for buttons.component routing in app.module.ts:
+                const routes: Routes = [
+                 { path: 'demo', loadChildren: () => import('./demo/demo.module').then(m => m.DemoModule) },
+                 { path: '**', redirectTo: 'demo' }
+              ];
+
+              -  import { Routes, RouterModule } from '@angular/router';
+                  imports: [
+                  ....
+                  RouterModule.forRoot(routes)
+                ],
+
+            - now let us "Routing" in demo-routing.module.ts
+                  const routes: Routes = [
+                  { path: 'buttons', component: ButtonsComponent },
+                  { path: 'flexbox', component: FlexboxComponent },
+                  { path: '**', redirectTo: 'buttons' }
+                ];
+
+            - add this in @NgModule
+                @NgModule({
+                imports: [RouterModule.forChild(routes)],
+                exports: [RouterModule]
+              })
+
+          - now go to app.module.ts and removed the following because we will
+            do it in demo.module.ts
+                import { MaterialModule } from './shared/material.module';
+                import { FormsModule } from '@angular/forms';
+
+          - now open demo.module.ts and add the following imports:
+              import { MaterialModule } from '../shared/material.module';
+            and then go to demo-routing
+
+      =======================================================
+                     FLEXBOX DEMO
+           SETTING UP THE ROUTE for flexbox.component:
+      =======================================================
+           - install angular flex layout using npm:
+               npm install --save @angular/flex-layout
+               
+
+          - create flexbox.component under "demo" folder
+           and add the following:
+
+              <div class="flex-container" fxLayout.xs="column">
+                <div class="flex-item">1</div>
+                <div class="flex-item">2</div>
+                <div class="flex-item">3</div>
+                <div class="flex-item">4</div>
+                <div class="flex-item">5</div>
+                <div class="flex-item">6</div>
+              </div>
+
+          - then modify demo-routing.module by adding this path 
+                { path: 'flexbox', component: FlexboxComponent },
+
+         
+            then go to demo.module.ts and import FlexLayoutModule
+              @NgModule({
+                imports: [
+                  ...
+                  FlexLayoutModule,
+                ],
+          CENTERING:
+             - open flexboxcomponent.html 
+             - see comments in flexbox.csss and flexbox.componet.html
+             - add the following in .scss
+                  .flex-container {
+                      display: flex;
+                      // flex-flow: row wrap;
+
+                      flex-direction: row;
+                      flex-wrap: wrap;
+
+                      justify-content: space-around;
+                  }
+
+              - add media queries
+
+          NOTE: Checkout  Thomas Burleson's Angular Flex layout demo
+                at https://tburleson-layouts-demos.firebaseapp.com/#/docs
+
+    - creating CONTACTMANAGER:
+              
+         - create a route outlet in app.component.html
+                  <router-outlet></router-outlet>
+
+         - create contact.manager.module
+         
+         -  create contact managercomponents  in a folder called "contactmanager"
+              sidenav component
+              main-content.component
+              toolbar.component 
+
+         ===============================================
+            Wire up our Feature module "Contact Manager"
+         ================================================
+         - Step 1 - wire up contactmanager.module  in app.module (very first step)
+            open app.module.ts to wire our contactmanager.module
+
+             1. hook up and lazy load our contactmanager.module like this
+                   { path: 'contactmanager', loadChildren: () => import('./contactmanager/contactmanager.module').then(m => m.ContactmanagerModule) },
+
+                - change redirect to "contactmanager" like this:
+                     { path: '**', redirectTo: 'contactmanager' }
+
+         - step 2 let us complete the code in our contactmanager module which\
+           we wired to app.module. add the following in :
+
+              import { MaterialModule } from '../shared/material.module';
+              import { FlexLayoutModule } from '@angular/flex-layout';
+              import { FormsModule } from '@angular/forms'
+
+              // add the following components
+              import { ContactmanagerAppComponent } from './contactmanager-app.component';
+              import { ToolbarComponent } from './components/toolbar/toolbar.component';
+              import { MainContentComponent } from './components/main-content/main-content.component';
+              import { SidenavComponent } from './components/sidenav/sidenav.component';
+              import RouterModule.forChild(routes)
+              
+          
+            - now let us create the route in ContactmanagerModule
+               add this import: 
+               // import router module
+               import { Routes, RouterModule } from '@angular/router';
+               import RouterModule.forChild from RouterModule like this:
+
+             - Now define the routes in contactmanager module
+               NOTE: the contactmanager will have it's own child route
+                       const routes: Routes = [
+                          { path: '', component: ContactmanagerAppComponent, - step 1
+                            children: [
+                              { path: '', component: MainContentComponent }  - step 2
+                            ] },
+                          { path: '**', redirectTo: '' }
+                        ];
+
+            - next import RouterModule.forChild like this
+                @NgModule({
+                imports: [
+                  ....
+                  RouterModule.forChild(routes)
+                ]
+
+           
+            
+             - next we need to put sidenav.component in contactmanager-app.component
+                 (this is the main container of contactmanager) it will host the rest 
+                 of the compoenents in contact manager)
+
+                @Component({
+                  selector: 'app-contactmanager-app',
+                  template: `
+                    <app-sidenav></app-sidenav>
+                  `,
+                  styles: []
+                })
+
+            - the sidenav will be the host for sidenav content, along with the toolbar.
+              so let us open the sidenav and add the:
+                  <app-toolbar ></app-toolbar> and
+                  <router-outlet></router-outlet> the router outlet
+                  
+    BUILDING THE SIDENAV.COMPONENT
+      - mat-sidenav-container is placed in the main-container (see)
+        sidenave.component.html and main-content-component
+      - copy paste sample of sidenav from 
+         https://material.angular.io/components/sidenav/overview
+
+      - see sidenav.component.html for commetns
+          
+============================================ 
+ MODULE 6 - DISPLAYING REAL DATA  ctl+. to import auto
+============================================
+   - create a userservice.ts
+      - create a userservice.ts in a folder "service" and add it to contactmanager.module
+      - create note.ts and useer.ts inmodel folder
+
+   - see comments in contactmanager.app component
+
+   - maincontent.component handles stuff when an item is clicked and navigated to.
+     it also displays the selected contact using Mat-card
+
+   - Adding Responsiveness - see comments in SidenavComponent.ts
+
+============================================ 
+ MODULE 7 - DISPLAYING DATA TABLES
+============================================
+   - TODO
+============================================ 
+ MODULE 8 - DIALOG AND POP UPS
+============================================
+   TODO
+============================================ 
+ MODULE 9 - WRAP UP
+============================================
+
+
+  npm install -g @angular/cli
+  npm install @angular/cli
+  ng update @angular/cli 
+  npm install
+  ng s -o

@@ -1,0 +1,334 @@
+https://github.com/deborahK/angular-routing
+
+1. How does the menu in our app.component access the  the product and user routes (in the feature route in product.module and app.module.ts)?
+    Answer: IN THE APP.MODULE. IN THE IMPORTS ARRAY, WE IMPORT THE ROUTERMODULE AND THE FEATURE modules like this:
+
+        @NgModule({
+        imports: [
+            ....
+            RouterModule.forRoot([
+            {path: 'welcome', component: WelcomeComponent},
+            {path: '', redirectTo: 'welcome', pathMatch: 'full'},
+            {path: '**', component: PageNotFoundComponent}
+            ]),   
+             ProductModule,  
+             UserModule, 
+             MessageModule  
+        ]
+        - here the router merges the application routes explicitily defined above (e.g. path: 'welcome' etc...)
+          with the routes in ProductModule, UserModule, Message Module (which contains feature routes)
+
+          Note: Anhular will reorder routes starting with the feature routes and routes in app.module.ts last.
+                The sequence of the routes will be like this:
+
+                product - from ProductModule
+                login   - from UserModule
+                welcome - from app.module
+                ""        from app.module
+                **        from app.module
+
+2. WHY DEFINE A ROUTING MODULE (SEE app-routing.module.ts)
+    ANSWER: SEPARATION OF CONCERN
+
+3. PASSING PARAMETERS
+    - see product-list.component.html for an example on passing parameters.
+    - see product.detail.component.ts for an example of how to retrieve paramters using ActivatedRoute directive
+
+      Note: Very Important! If the parameter of the URL is the only one that changed,
+      the component is not initialized again. Because the NgInit is not execurted again because only
+      the parameter changed, not the URL. (See product-edit.component.ts)
+
+    - EXAMPLE:
+         //accessing ActivatedRoute service params observable
+         //this will be executed everytime the parameter changes
+         //this.getProduct(id) will rturn an initialized product object if id=0 (see getProduct) 
+
+         this.route.params.subscribe(params => {             
+           let id = +params["id"];           
+           this.getProduct(id); 
+         });
+
+4. DEFINING OPTIONAL ROUTE PARAMETERS
+5. DEFINING QUERY PARAMETERS
+   - TO RETAIN THE PRODUCTLIST VIEW WWHEN NAVIGATING (SAY IF WE WE FILTERED THE THE PRODUCTLIST) 
+     TO  THE DETAIL OF A GIVEN RECORD, WE NEED TO USE QUER PARAMETERS.
+     UNLIKE OPTUONAL PARAMETERS, query parameters are retained accross routing paths.
+
+   - query parameters has a question mark at the beginning see product-list.component.html
+   -  we must set queryParamsHandling = preserve in the router link like this:
+        <a [routerLink] = "['/products']"
+        queryParamsHandling = "preserve"> v 4.0 preserveQueryParam - v 2.0
+
+      SEE product-detail.component.html
+         <a class="btn btn-default" 
+                [routerLink]= "['/products']" 
+                [preserveQueryParams] = "true">  <!--navigate to the productlist.component and preserve previous view based on the queryParams -->
+            <i class="glyphicon glyphicon-chevron-left"></i> Back
+        </a>
+
+    - in order for the query parameters to take effect, we must read the query parameters.
+      to read the query paramters we begin by importing  the ActivatedRoute
+      see product-list.component.ts for examples
+
+6. PREFETCHING DATA USING ROUTE RESOLVERS:
+   - this mmeans downlod the data first before routing to the component
+
+   - create a service product-resolver.service.ts and see how a resolver constructed
+
+   - how to a associate a Resolver to a Route: sse product-Module.ts
+       - import the resolver
+       - then register it in the providers array like this 
+            providers: [
+            ....,
+            ProductResolver
+           ]
+      - Next we add the resolver to the route configuration like this (see product.module.ts)
+         {path: 'products/:id', component: ProductDetailComponent,
+                                resolve:{product: ProductResolver}},
+                      
+      - next we need to modify the components to read this data from route
+          - in the component use this.route.snapshot.data['product'] to read data from the route
+          - this.route.snapshot.data['product'] is an instance that can be accessing similarly in other components...
+            this is called data sharing
+          - see product-detail.component and product-edit.component.ts
+
+7. CHILD routes
+    - we will modify the product.module.ts. in our application we want to change our ProductEditComponent to a 
+     container with tabs and use child routes to route to the content of each tab. the product routes
+     are in product.module.ts
+
+    - ACTIVATING CHILD ROUTES. THERE ARE TWO WAYS: ABSOLUTE PATH AND RELATIVE PATH
+         //ABSOLUTE path
+         <a [routerLink]="['/products', product.id, 'edit', 'info']"> Info</a>
+
+         //Relative path
+          <a [routerLink]="[''info']"> Infor</a>
+           
+           EXAMPLE OF RELATIVE PATH
+         <div class="wizard">
+            <a [routerLink]="['info']" routerLinkActive="active">
+                Basic Information  <span [ngClass]="{'glyphicon glyphicon-exclamation-sign':
+                                                      !isValid('info')}"></span>
+            </a>
+            <a [routerLink]="['tags']" routerLinkActive="active">
+                Search Tags  <span  [ngClass]="{'glyphicon glyphicon-exclamation-sign':
+                                                      !isValid('tags')}"></span>
+            </a>
+        </div>
+
+  - child routes can also be activated programmatically like this:  
+      this.router.navigate(['/products', product.id, 'edit', 'info']) or 
+      this.router.navigate(['info'], { relativeTo: this.route}) where this.route is the activated route
+
+  - OBTAINING DATA FOR A CHILD ROUTE
+    - we can use product data service - but might cause a delay in displaying data
+    - create a child route resolver - the best option  if each chid route requires different data
+    - but if the data needed is the same as the parent data such as in our product-edit example, we can
+      use a route resolver on the parent route.
+      EVEN THOUGH WE HAVE MULTIPLE TABS, the display data is all part of the same product.
+
+      Since our edit pages all work with the same set of data, let's use the parent route's resolver like this:
+        this.product = this.route.PARENT.snapshop.data['product'] - recall that this syntax providers
+        a reference to the product data instance... so our parent route and esch child route with a reference
+        will share that instance (VERY IMPORTANT CONCEPT)
+
+            - see product-edit-info.component.ts and product-edit-tags.component.ts
+
+  - HOW DO WE VALIDATE ACCROSS CHILD ROUTES.
+    BEST OPTION: define a form in each child component like we have now but manually perform validation 
+    instead of relying on the form (reminder validation relies on the form but yu can do manual validation)
+        - see prodict-edit-component.html 
+
+
+8. GROUPING AND COMPONENT-LESS PARENT ROUTES:
+    - COMPONENT-less parent means defining our child routes under a single parent route without create another 
+      <router-outlet> like what we did under the product-edit.component.
+
+    - see notes in product.module.ts
+
+
+9. STYLING AND ANIMATING ROUTES:
+
+     - see app.component.html and product-edit.component.html  
+
+     - add the following code to product-edit.component.html
+           <div class="wizard">
+             <a [routerLink]="['info']" routerLinkActive="active">
+                Basic Information 
+               <span [ngClass]="{'glyphicon glyphicon-exclamation-sign':
+                                                      !isValid('info')}"></span>  //adding error icon
+            </a>
+            <a  [routerLink]="['tags']" routerLinkActive="active">
+                Tags
+                <span [ngClass]="{'glyphicon glyphicon-exclamation-sign':
+                                                      !isValid('tags')}"></span> //adding error icon
+            </a>
+        </div>
+
+        Note: we don't need a square bracket because we are not assigning "active" to a property'
+                routerLinkActive="active
+
+    - animating route transitions using CSS Animations
+        see style.css
+
+            /* Slide transition */
+            pm-app div.panel.panel-primary {
+                animation-duration: .5s;
+                animation-name: slideIn;
+                animation-fill-mode: forwards;
+                transition: transform .5s ease;
+            }
+
+            @keyframes slideIn {
+            from {
+                transform: translate(-200px);
+            }
+
+            to {
+                transform: translate(0px);
+            }
+            } 
+
+    - Watching Routing Events
+        - anytime the user navigates in the application, the router generate routing events that
+          we can use to monitor, troubleshoot or perform logic.
+
+        - enable tracing to see these events like this {enableTracing: true}). see app-routing.module.ts
+             RouterModule.forRoot([
+                {path: 'welcome', component: WelcomeComponent},
+                {path: '', redirectTo: 'welcome', pathMatch: 'full'},
+                {path: '**', component: PageNotFoundComponent}
+                ], {enableTracing: true}), 
+
+            - go to developer tools Console to see events
+
+        - HOW TO WATCH EVENTS INSIDE YOUR CODE:
+            - go to app.compoment.ts.
+            - first we need to add appropriate router imports.
+                import { Router, Event, NavigationStart, NavigationEnd, NavigationError, NavigationCancel } from '@angular/router';
+
+            - to see what's going on we need to subscribe to the router's events in the constructor like this:
+                     constructor(private authService: AuthService,
+                            private messageService: MessageService,
+                            private router: Router) {
+
+                            router.events.subscribe((routerEvent: Event) => {
+                                this.checkRouterEvent(routerEvent);
+                            });
+                        }
+
+            - to add the spinner go to app.component.html template at the very top of the file we will
+              display the spinner using Bootstrap glyphicon like this:
+                <!-- display spinner -->
+                <span class="glyphicon glyphicon-refresh glyphicon-spin spinner" *ngIf="loading"></span>
+
+              - go to style.css and this style:
+                    /* Spinner */
+                    .spinner {
+                    font-size:300%;
+                    position:absolute;
+                    top: 50%;           //positions spinner on the center of the page
+                    left: 50%;
+                    z-index:10
+                    }
+
+                    .glyphicon-spin {
+                        -webkit-animation: spin 1000ms infinite linear;
+                        animation: spin 1000ms infinite linear;
+                    }
+                    @-webkit-keyframes spin {
+                        0% {
+                            -webkit-transform: rotate(0deg);
+                            transform: rotate(0deg);
+                        }
+                        100% {
+                            -webkit-transform: rotate(359deg);
+                            transform: rotate(359deg);
+                        }
+                    }
+                    @keyframes spin {
+                        0% {
+                            -webkit-transform: rotate(0deg);
+                            transform: rotate(0deg);
+                        }
+                        100% {
+                            -webkit-transform: rotate(359deg);
+                            transform: rotate(359deg);
+                        }
+                    }
+
+10. SECONDARY ROUTES
+    - multiple routes displayed at the same time and at the same level of the hierarchy
+      are referred to as peer, sibling, auxiliary, or secondary routes.
+    - secondary routes are useful for building complex interfaces.
+    - go to app.component.html and define a secondary-named outlet - a panel on the right side of
+      of the main page like this:
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <router-outlet></router-outlet>
+                    </div>
+                    <div class="col-md-2">
+                        <router-outlet name="popup"></router-outlet>
+                    </div>
+                </div>
+            </div>
+
+    - CONFIGURING SECONDARY ROUTES
+        - SEE MESSAGE.COMPONENT.TS.
+        - since displaying a popup message is a feature by itself, create the following:
+            - message.component.ts
+            - message.service.ts
+            - and message.module.ts
+
+        - HOW TO ACTIVATE SECONDARY ROUTES
+            - see app.component.html
+                  <li *ngIf="!messageService.isDisplayed"> <!--display message in the secondary outlet if isDisplayed = false -->
+                    <a (click)="displayMessages()">Show Messages</a>
+                </li>
+                  <li *ngIf="messageService.isDisplayed"> <!--display message in the secondary outlet if isDisplayed = true -->
+                    <a (click)="hideMessages()">Hide Messages</a>
+                </li>
+
+            - see message.service.ts 
+                 isDisplayed = false;
+
+            - see app.component.ts
+                displayMessages(): void {
+                    // Example of primary and secondary routing together
+                    // this.router.navigate(['/login', {outlets: { popup: ['messages']}}]); // Does not work
+                    // this.router.navigate([{outlets: { primary: ['login'], popup: ['messages']}}]); // Works
+                    this.router.navigate([{outlets: { popup: ['messages']}}]); // Works
+                    this.messageService.isDisplayed = true;
+                }
+
+                hideMessages(): void {
+                    this.router.navigate([{ outlets: { popup: null } }]);
+                    this.messageService.isDisplayed = false;
+                }
+
+        - CLEARING SECONDARY outlets
+            - WE WILL CLEAR THE SECONDARY OUTLET BY NAVIGATING TO THE OUTLET WITH A VALUE OF NULL LIKE THIS:
+                hideMessages(): void {
+                    this.router.navigate([{ outlets: { popup: null } }]); //pass in a "null" in orderto clear secondary route
+                    this.messageService.isDisplayed = false;
+                }
+            - to test click "Show Messages".. the title changes to "Hide Messages"
+               and then add login to add message to the Message Log. Click "Hide Messages" to clear the secondary route.
+
+            - now to clear the messages by clicking the "Clear" button, go to Message.Component.ts and add this code:
+                <div class="row">
+                <h4 class="col-md-10">Message Log</h4>
+                <span class="col-md-2">
+                        <a class="btn btn-default"
+                            (click)="close()">
+                            Clear
+                        </a>
+                    </span>
+             
+                 close(): void {
+                // Close the popup by passing "null"
+                this.router.navigate([{outlets: {popup:null}}])
+                this.messageService.isDisplayed=false;
+                  }
+                    

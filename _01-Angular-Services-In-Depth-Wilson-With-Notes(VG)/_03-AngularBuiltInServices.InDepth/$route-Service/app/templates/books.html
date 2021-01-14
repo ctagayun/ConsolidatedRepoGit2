@@ -1,0 +1,25 @@
+<h3>All Books</h3>
+<div>
+    <ul>
+        <!--<a href="#/EditBook/{{ book.book_id }}">Edit is an edit link for each book-->
+        <li ng-repeat="book in books.allBooks">{{ book.title }} - {{ book.author }} <a href="#/EditBook/{{ book.book_id }}">Edit</a> </li>
+    </ul>
+</div>
+
+<!--the default angular configuration expects that the client-side route begins with a hash symbol #-->
+<ul>
+    <li><a href="#/AddBook">Add New Book</a></li>
+    <li><a href="#/EditBook/{{ books.lastEdited.book_id }}">Open Last Edited</a></li>
+</ul>
+<h3>All Readers</h3>
+<div>
+    <ul>
+        <li ng-repeat="reader in books.allReaders">{{ reader.name }} - {{ books.getBadge(reader.totalMinutesRead) }}</li>
+    </ul>
+</div>
+
+
+<h3>Current Favorite Book</h3>
+<div>
+    {{ books.favoriteBook }}
+</div>

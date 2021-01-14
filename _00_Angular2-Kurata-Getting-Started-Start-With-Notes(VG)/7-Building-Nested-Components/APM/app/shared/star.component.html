@@ -1,0 +1,17 @@
+<div class="crop" 
+    [style.width.px]="starWidth"
+    [title]="rating"
+    (click)='onClick()'> <!--we use event binding in the starComponent html template to call the starComponent's 
+                            onClick() method. Example:
+                              onClick(): void {
+                                this.ratingClicked.emit(`The rating ${this.rating} was clicked!`);
+                                }
+                         -->
+    <div style="width: 86px">
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+        <span class="glyphicon glyphicon-star"></span>
+    </div>
+</div>

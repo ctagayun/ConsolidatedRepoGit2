@@ -1,0 +1,3 @@
+https://github.com/deborahK/angular-routing
+
+1. See product.detail.component

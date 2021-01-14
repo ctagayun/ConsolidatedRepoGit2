@@ -1,0 +1,20 @@
+
+<!--This parent classroom displays three classroom attributes of the selected classroom.
+since we included the general classroom information in the parent view, we don't 
+    need it in the individual child views (classroom.html and classroomdetail.html)  anymore .-->
+ 
+<div class="col-md-8 col-lg-8 col-md-offset-1 col-lg-offset-1">
+    <h3>School: {{ classroom.currentClassroom.schoolName }}</h3>
+
+    <h3>Classroom: {{ classroom.currentClassroom.name }}</h3>
+
+    <h3>Teacher: {{ classroom.currentClassroom.teacher }}</h3>
+</div>
+
+<!--It includes two ui-view directives where the child views will be inserted-
+Note: A child state will have a html template like any other state but it will be inserted
+in the ui-view defined here (the parent template) not the ui-view defined at the root of
+    the application.classInfo and classMessage are names of the "views" defined in app.js routing
+-->
+<div ui-view="classInfo"></div>
+<div ui-view="classMessage"></div>
